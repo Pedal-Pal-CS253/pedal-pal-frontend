@@ -1,4 +1,4 @@
-# pedalpal
+# frontend
 
 A new Flutter project.
 
