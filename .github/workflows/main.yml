@@ -1,0 +1,17 @@
+name: Flutter Format Check
+
+on: ['push', 'pull_request']
+
+jobs:
+    format:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: 'Install Flutter'
+          uses: subosito/flutter-action@v2.12.0
+
+        - name: 'Flutter Version'
+          run: flutter --version
+
+        - name: 'Flutter Format Check'
+          run: flutter format --set-exit-if-changed .
