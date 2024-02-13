@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/wallet_home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,8 +45,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
           title: Text(widget.title),
         ),
-        body: Text("PedalPal app",)
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Your existing app content here
 
+            // Button to navigate to the wallet page
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WalletHomePage()),
+                );
+              },
+              child: Text('Open Wallet'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
