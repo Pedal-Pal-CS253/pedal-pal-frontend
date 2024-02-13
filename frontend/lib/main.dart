@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/wallet_home_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
+
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -44,8 +49,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
           title: Text(widget.title),
         ),
-        body: Text("PedalPal app",)
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Your existing app content here
 
+            // Button to navigate to the wallet page
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WalletHomePage()),
+                );
+              },
+              child: Text('Open Wallet'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
+
