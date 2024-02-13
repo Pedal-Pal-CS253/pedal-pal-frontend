@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -87,7 +88,7 @@ class AddBalanceScreen extends State<ABS> {
 
   void openCheckout(){
     var options = {
-      "key" : "API_KEY_here",
+      "key" : dotenv.env['RAZORPAY_API_KEY'],
       "amount" : num.parse(textEditingController.text)*100,
       "name" : "PedalPal",
       "description" : "Add Balance to your PedalPal Wallet",
