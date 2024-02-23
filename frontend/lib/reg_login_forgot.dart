@@ -8,6 +8,17 @@ class RegistrationApp extends StatelessWidget {
   }
 }
 
+final InputDecoration textFormFieldDecoration = InputDecoration(
+  border: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.blue),
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.blue),
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+);
+
 class RegistrationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -27,7 +38,7 @@ class RegistrationPage extends StatelessWidget {
             children: <Widget>[
               Center(
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 100, top:80),
+                  margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                   child:
                   Image.asset(
                     'assets/pedal_pal_logo.png', // Adjust the path to your image
@@ -36,7 +47,7 @@ class RegistrationPage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 40),
+                margin: EdgeInsets.only(bottom: 40.0),
                 child: Text(
                   'Welcome to Pedal Pal',
                   style: TextStyle(
@@ -45,25 +56,25 @@ class RegistrationPage extends StatelessWidget {
                 ),
               ),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: textFormFieldDecoration.copyWith(
                 labelText: 'Your Full Name',
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 15.0),
               TextFormField(
-              decoration: InputDecoration(
+              decoration: textFormFieldDecoration.copyWith(
                 labelText: 'Your Phone Number',
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 15.0),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: textFormFieldDecoration.copyWith(
                 labelText: 'Your Email Address',
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 15.0),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: textFormFieldDecoration.copyWith(
                 labelText: 'Password',
                 ),
               obscureText: true,
@@ -225,7 +236,7 @@ class LoginPage extends StatelessWidget {
           children: <Widget>[
             Center(
               child: Container(
-                margin: EdgeInsets.only(bottom: 100, top:80),
+                margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child:
                 Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
@@ -238,14 +249,16 @@ class LoginPage extends StatelessWidget {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Your phone number'),
+              SizedBox(height: 20.0),
+              TextFormField(
+              decoration: textFormFieldDecoration.copyWith(labelText: 'Your phone number'),
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Password'),
+              SizedBox(height: 20.0),
+              TextFormField(
+              decoration: textFormFieldDecoration.copyWith(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20.0),
+              SizedBox(height: 20.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1A2758),
@@ -269,7 +282,7 @@ class LoginPage extends StatelessWidget {
                 child: Text('Forgot Password?'),
               ),
             ),
-            SizedBox(height:70),
+            SizedBox(height: 70.0),
             Align(
                 alignment: Alignment.center,
                   child: Row(
@@ -312,7 +325,7 @@ class ForgotPasswordPage extends StatelessWidget {
           children: <Widget>[
             Center(
               child: Container(
-                margin: EdgeInsets.only(bottom: 100, top:80),
+                margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child:
                 Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
@@ -326,7 +339,7 @@ class ForgotPasswordPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
             TextFormField(
-              decoration: InputDecoration(labelText: 'Enter Email'),
+              decoration: textFormFieldDecoration.copyWith(labelText: 'Enter Email'),
             ),
             SizedBox(height: 20.0),
               ElevatedButton(
@@ -336,7 +349,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/password_reset');
                 },
-                child: Text('Send a Link. ',
+                child: Text('Send a Link',
                   style: TextStyle( fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -377,7 +390,7 @@ class PasswordResetPage extends StatelessWidget {
           children: <Widget>[
             Center(
               child: Container(
-                margin: EdgeInsets.only(bottom: 100, top:80),
+                margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child:
                 Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
@@ -390,15 +403,17 @@ class PasswordResetPage extends StatelessWidget {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(labelText: 'New Password'),
+              SizedBox(height: 20.0),
+              TextFormField(
+              decoration: textFormFieldDecoration.copyWith(labelText: 'New Password'),
               obscureText: true,
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Confirm Password'),
+              SizedBox(height: 20.0),
+              TextFormField(
+              decoration: textFormFieldDecoration.copyWith(labelText: 'Confirm Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20.0),
+             SizedBox(height: 20.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1A2758),
