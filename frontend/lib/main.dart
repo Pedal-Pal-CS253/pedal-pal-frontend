@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/wallet_home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/reg_login_forgot.dart';
+import 'pages/map_page.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: "PedalPalll"),
+        '/UserHome': (context) => MapPage(),
         '/registration': (context) => RegistrationApp(),
         '/otp_verification': (context) => OTPVerificationPage(),
         '/account_created': (context) => AccountCreatedPage(),
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/forgot_password': (context) => ForgotPasswordPage(),
         '/password_reset': (context) => PasswordResetPage(),
         '/password_reset_successful': (context) => PasswordResetSuccessfulPage(),
+
       },
     );
   }
@@ -81,6 +84,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: Text('Open Wallet'),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage()),
+                );
+              },
+              child: Text('UserHome')
             ),
           ],
         ),
