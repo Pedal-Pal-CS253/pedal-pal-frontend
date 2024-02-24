@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 class WalletHomePage extends StatelessWidget {
   @override
@@ -111,7 +112,7 @@ class AddBalanceScreen extends State<ABS> {
   }
 
   void handlerPaymentSuccess(){
-    print("Pament success");
+    print("Payment success");
     Fluttertoast.showToast(msg : "Payment Success!", toastLength: Toast.LENGTH_SHORT);
   }
 
@@ -134,11 +135,23 @@ class AddBalanceScreen extends State<ABS> {
         padding: const EdgeInsets.all(30.0),
         child: Column(
           children: [
-            TextField(
+            TextFormField(
               controller: textEditingController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
               decoration: InputDecoration(
-                  hintText: "Enter Amount to Add"
+              labelText: 'Enter Amount',
+              hintText: '0.00',
+              border: OutlineInputBorder(),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an amount';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 12,),
             ElevatedButton(

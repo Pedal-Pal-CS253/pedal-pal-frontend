@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/wallet_home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/reg_login_forgot.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -8,27 +9,33 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Pedal Pal',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Pedal Pal'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: "PedalPalll"),
+        '/registration': (context) => RegistrationApp(),
+        '/otp_verification': (context) => OTPVerificationPage(),
+        '/account_created': (context) => AccountCreatedPage(),
+        '/login': (context) => LoginPage(),
+        '/forgot_password': (context) => ForgotPasswordPage(),
+        '/password_reset': (context) => PasswordResetPage(),
+        '/password_reset_successful': (context) => PasswordResetSuccessfulPage(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
 
   final String title;
 
@@ -37,7 +44,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +60,17 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Your existing app content here
+            Image.asset(
+              'assets/pedal_pal_logo.png', // Adjust the path to your image
+              width: 260, // Adjust the width as needed
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()),
+                );
+              },
+              child: Text('Register')
+            ),
 
             // Button to navigate to the wallet page
             ElevatedButton(
