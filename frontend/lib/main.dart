@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: "PedalPalll"),
-        '/UserHome': (context) => MapPage(),
+        '/DashBoard': (context) => MapPage(),
         '/registration': (context) => RegistrationApp(),
         '/otp_verification': (context) => OTPVerificationPage(),
         '/account_created': (context) => AccountCreatedPage(),
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage()),
                 );
               },
-              child: Text('UserHome')
+              child: Text('Dashboard')
             ),
           ],
         ),
