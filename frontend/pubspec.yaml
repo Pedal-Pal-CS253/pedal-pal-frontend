@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   pin_input_text_field: ^4.5.1
-
+  google_maps_flutter: ^2.5.3
 
 
 
