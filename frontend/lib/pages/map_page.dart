@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:frontend/wallet_home_page.dart';
+import 'package:frontend/reg_login_forgot.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -57,6 +59,23 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Hello, Raghav!',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -67,15 +86,6 @@ class _MapPageState extends State<MapPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Hello, Raghav!',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 20),
                   Container(
                     height: 600,
                     child: GoogleMap(
@@ -118,7 +128,6 @@ class _MapPageState extends State<MapPage> {
                           BoxShadow(
                             color: Colors.white.withOpacity(1),
                             // spreadRadius: 5.0, // Adjust shadow spread
-
                           ),
                         ],
                       ),
@@ -130,14 +139,12 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: Container(
                                   height: 30, // Height adjusted to be a tenth of the container's height
-
                                   child: Center(child: Text('SELECTED HUB')),
                                 ),
                               ),
                               Expanded(
                                 child: Container(
                                   height: 30, // Height adjusted to be a tenth of the container's height
-
                                   child: Center(child: Text('CYCLES AVAILABLE')),
                                 ),
                               ),
@@ -148,14 +155,12 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: Container(
                                   height: 50,
-
                                   child: Center(child: Text('RM Building')),
                                 ),
                               ),
                               Expanded(
                                 child: Container(
                                   height: 50,
-
                                   child: Center(child: Text('6')),
                                 ),
                               ),
@@ -166,13 +171,11 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: Container(
                                   height: 50,
-
                                   child: Center(child: Text('Advanced Booking')),
                                 ),
                               ),
                             ],
                           ),
-
                           Row(
                             children: [
                               Expanded(
@@ -184,7 +187,6 @@ class _MapPageState extends State<MapPage> {
                                         onPressed: () => _selectDate(context),
                                         child: Text('Select Date'),
                                       ),
-
                                       Text(
                                         '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
                                         style: TextStyle(fontSize: 18),
@@ -227,7 +229,6 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 flex: 2,
                                 child: Container(
-
                                   // height: 50,
                                   color: Colors.cyan,
                                   child: Center(child: Text('Book')),
@@ -237,15 +238,87 @@ class _MapPageState extends State<MapPage> {
                           ),
                         ],
                       ),
-
-
-    // padding: EdgeInsets.all(20.0),
                     ),
                   ),
                 ),
               ),
             ),
         ],
+      ),
+      drawer: Drawer(
+        child: SingleChildScrollView( // Wrap the Drawer contents with SingleChildScrollView
+          child: Column(
+            children: [
+              SizedBox(
+                height: 300, // Adjust the height accordingly
+                child: DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('assets/your_image.png'),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Raghav',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'View Profile',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  ListTile(
+                    title: Text('Wallet'),
+                    onTap: () {
+                      // Handle item 1 tap
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WalletHomePage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('History'),
+                    onTap: () {
+                      // Handle item 2 tap
+                    },
+                  ),
+                  ListTile(
+                    title: Text('My Bookings'),
+                    onTap: () {
+                      // Handle item 3 tap
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Log Out'),
+                    onTap: () {
+                      // Handle item 4 tap
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
