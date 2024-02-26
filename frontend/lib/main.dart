@@ -22,8 +22,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(title: "PedalPalll"),
+        '/': (context) => MyHomePage(title: "PedalPal"),
         '/DashBoard': (context) => MapPage(),
+        // '/history': (context) =>
         '/registration': (context) => RegistrationApp(),
         '/otp_verification': (context) => OTPVerificationPage(),
         '/account_created': (context) => AccountCreatedPage(),
