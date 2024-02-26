@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/describe_issue.dart';
 
 
 void main() {
@@ -21,8 +22,33 @@ class IssuesWithCycle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Issues with the Cycle'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 0.0),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  SizedBox(width: 16.0),
+                  Text(
+                    'Issues with the cycle',
+                    style: TextStyle(color: Colors.black, fontSize: 24.0),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -56,7 +82,10 @@ class IssuesWithCycle extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle continue button press
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ((IssueReportingScreen()))),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

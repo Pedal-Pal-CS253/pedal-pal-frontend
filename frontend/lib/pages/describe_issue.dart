@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/feedback_submitted.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(DescribeIssue());
 }
 
-class MyApp extends StatelessWidget {
+class DescribeIssue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -65,7 +66,10 @@ class IssueReportingScreen extends StatelessWidget {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  // Add submit functionality here
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ((FeedbackSubmitted()))),
+                  );
                 },
                 child: Text(
                'Submit',
