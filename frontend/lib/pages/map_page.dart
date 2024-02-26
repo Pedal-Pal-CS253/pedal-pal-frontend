@@ -41,29 +41,56 @@ class _MapPageState extends State<MapPage> {
       });
   }
 
-  late String _infoForMarker;
+  late String _PlaceOfMarker;
   bool _showInfoContainer = false;
   late LatLng _markerPosition;
+  late int _CycleNum;
 
   @override
   void initState() {
     super.initState();
-    _infoForMarker = '';
+    _PlaceOfMarker = '';
   }
 
-  void updateInfoForMarker(String markerId, LatLng markerPosition) {
+  void InfoForMarker(String markerId, LatLng markerPosition, int cycles) {
     setState(() {
-      _infoForMarker = 'Information for $markerId';
+      _PlaceOfMarker = markerId;
+      _CycleNum = cycles;
       _markerPosition = markerPosition;
       _showInfoContainer = true;
     });
+  }
+  List<String> HUBS = [
+    'RM',
+    'Hall 6',
+    'Library',
+    'LH 20',
+    'Hall 5'
+  ];
+  List<int> CycleNum = [1,2,3,4,5,6];
+
+  Set<Marker> _generateMarkers(int n) {
+    Set<Marker> markers = {};
+    for (int i = 1; i <= n; i++) {
+      markers.add(
+        Marker(
+          markerId: MarkerId(HUBS[i-1]),
+          position: LatLng(26.5113 + (i * 0.01), 80.2329 + (i * 0.01)), // Adjust coordinates as needed
+          onTap: () {
+            InfoForMarker(HUBS[i-1], LatLng(26.5113 + (i * 0.01), 80.2329 + (i * 0.01)), CycleNum[i-1]);
+          },
+        ),
+      );
+    }
+    return markers;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello, Raghav!',
+        title: Text(
+          'Hello, Raghav!',
           textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 24,
@@ -96,15 +123,7 @@ class _MapPageState extends State<MapPage> {
                         target: LatLng(26.5113, 80.2329),
                         zoom: 13,
                       ),
-                      markers: {
-                        Marker(
-                          markerId: MarkerId('RM'),
-                          position: LatLng(26.5113, 80.2329),
-                          onTap: () {
-                            updateInfoForMarker('RM', LatLng(26.5113, 80.2329));
-                          },
-                        ),
-                      },
+                      markers: _generateMarkers(5), // If there are 5 hubs
                     ),
                   ),
                 ],
@@ -112,148 +131,168 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
           if (_showInfoContainer)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showInfoContainer = false;
-                  });
-                },
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: Container(
-                      height: 300,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0), // Adjust corner radius
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.white.withOpacity(1),
-                            // spreadRadius: 5.0, // Adjust shadow spread
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 30, // Height adjusted to be a tenth of the container's height
-                                  child: Center(child: Text('SELECTED HUB')),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 30, // Height adjusted to be a tenth of the container's height
-                                  child: Center(child: Text('CYCLES AVAILABLE')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('RM Building')),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('6')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('Advanced Booking')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () => _selectDate(context),
-                                        child: Text('Select Date'),
-                                      ),
-                                      Text(
-                                        '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ],
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showInfoContainer = false;
+                    });
+                  },
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Center(
+                      child: Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0), // Adjust corner radius
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(1),
+                              // spreadRadius: 5.0, // Adjust shadow spread
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 30, // Height adjusted to be a tenth of the container's height
+                                    child: Center(child: Text('SELECTED HUB')),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () => _selectTime(context),
-                                        child: Text('Select Time'),
-                                      ),
-                                      SizedBox(height: 20),
-                                      Text(
-                                        '${selectedTime?.hour}:${selectedTime?.minute}',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ],
+                                Expanded(
+                                  child: Container(
+                                    height: 30, // Height adjusted to be a tenth of the container's height
+                                    child: Center(child: Text('CYCLES AVAILABLE')),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  color: Colors.cyan,
-                                  child: Center(child: Text('Ride Now')),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 50,
+                                    child: Center(child: Text(_PlaceOfMarker)),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  // height: 50,
-                                  color: Colors.cyan,
-                                  child: Center(child: Text('Book')),
+                                Expanded(
+                                  child: Container(
+                                    height: 50,
+                                    child: Center(child: Text('$_CycleNum')),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 50,
+                                    child: Center(child: Text('Advanced Booking', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold,),)
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        ElevatedButton(
+                                          onPressed: () => _selectDate(context),
+                                          child: Text('Select Date'),
+                                        ),
+                                        Text(
+                                          '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        ElevatedButton(
+                                          onPressed: () => _selectTime(context),
+                                          child: Text('Select Time'),
+                                        ),
+                                        SizedBox(height: 20),
+                                        Text(
+                                          '${selectedTime?.hour}:${selectedTime?.minute}',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Functionality to execute when the button is pressed
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, // Change the background color as per your requirement
+                                    ),
+                                    child: Text(
+                                      'Ride Now',
+                                      style: TextStyle(
+                                        color: Colors.white, // Change the text color as per your requirement
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 16.0),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Functionality to execute when the button is pressed
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, // Change the background color as per your requirement
+                                    ),
+                                    child: Text(
+                                      'Book Now',
+                                      style: TextStyle(
+                                        color: Colors.white, // Change the text color as per your requirement
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
         ],
       ),
+
+      // Navigation bar
       drawer: Drawer(
-        child: SingleChildScrollView( // Wrap the Drawer contents with SingleChildScrollView
+        child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
-                height: 300, // Adjust the height accordingly
+                height: 300,
                 child: DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.blue,
@@ -292,7 +331,6 @@ class _MapPageState extends State<MapPage> {
                   ListTile(
                     title: Text('Wallet'),
                     onTap: () {
-                      // Handle item 1 tap
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => WalletHomePage()),
@@ -320,10 +358,7 @@ class _MapPageState extends State<MapPage> {
                   ListTile(
                     title: Text('Log Out'),
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => (MyHomePage())),
-                      // );
+                      // Log out action
                     },
                   ),
                 ],
@@ -335,3 +370,4 @@ class _MapPageState extends State<MapPage> {
     );
   }
 }
+
