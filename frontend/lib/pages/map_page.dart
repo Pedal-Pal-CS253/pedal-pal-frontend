@@ -67,7 +67,14 @@ class _MapPageState extends State<MapPage> {
     'LH 20',
     'Hall 5'
   ];
-  List<int> CycleNum = [1,2,3,4,5,6];
+  List<int> CycleNum = [1,2,3,4,5];
+  List<LatLng> Coordinates = [
+    LatLng(26.514316, 80.234816),
+    LatLng(26.505147, 80.234617),
+    LatLng(26.512331, 80.233678),
+    LatLng(26.510890, 80.234255),
+    LatLng(26.509612, 80.228636),
+  ];
 
   Set<Marker> _generateMarkers(int n) {
     Set<Marker> markers = {};
@@ -75,9 +82,9 @@ class _MapPageState extends State<MapPage> {
       markers.add(
         Marker(
           markerId: MarkerId(HUBS[i-1]),
-          position: LatLng(26.5113 + (i * 0.01), 80.2329 + (i * 0.01)), // Adjust coordinates as needed
+          position: Coordinates[i-1],
           onTap: () {
-            InfoForMarker(HUBS[i-1], LatLng(26.5113 + (i * 0.01), 80.2329 + (i * 0.01)), CycleNum[i-1]);
+            InfoForMarker(HUBS[i-1], Coordinates[i-1], CycleNum[i-1]);
           },
         ),
       );
