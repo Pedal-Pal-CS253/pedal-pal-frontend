@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:frontend/wallet_home_page.dart';
 import 'package:frontend/reg_login_forgot.dart';
+import 'package:frontend/pages/history_page.dart';
+import 'package:frontend/pages/booking_page.dart';
+import 'package:frontend/main.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -299,19 +302,28 @@ class _MapPageState extends State<MapPage> {
                   ListTile(
                     title: Text('History'),
                     onTap: () {
-                      // Handle item 2 tap
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => (HistoryPage())),
+                      );
                     },
                   ),
                   ListTile(
                     title: Text('My Bookings'),
                     onTap: () {
-                      // Handle item 3 tap
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => (BookingPage())),
+                      );
                     },
                   ),
                   ListTile(
                     title: Text('Log Out'),
                     onTap: () {
-                      // Handle item 4 tap
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => (MyHomePage())),
+                      // );
                     },
                   ),
                 ],
