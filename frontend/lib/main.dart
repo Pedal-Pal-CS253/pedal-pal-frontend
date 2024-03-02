@@ -3,6 +3,11 @@ import 'package:frontend/wallet_home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/reg_login_forgot.dart';
 import 'pages/map_page.dart';
+import 'pages/active_ride.dart';
+import 'pages/describe_issue.dart';
+import 'pages/feedback_submitted.dart';
+import 'pages/issues_with_cycle.dart';
+import 'pages/ride_over.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -94,6 +99,46 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('Dashboard')
             ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RideScreen())
+                );
+              },
+              child: Text('Ride Screen')
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DescribeIssue())
+                  );
+                },
+                child: Text('Describe Issue')
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackSubmitted())
+                  );
+                },
+                child: Text('Feedback Submitted')
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssuesWithCycle())
+                  );
+                },
+                child: Text('Issue with Cycle')
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RideOver())
+                  );
+                },
+                child: Text('Ride Screen')
+            )
           ],
         ),
       ),
