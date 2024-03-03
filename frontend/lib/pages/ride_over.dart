@@ -29,8 +29,8 @@ class RideOver extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'C:\\pedal-pal-frontend2\\flutter_application_3\\flutter_application_3\\lib\\confirmation.png',
-                        width: 25,
+                        'assets/confirmation.png',
+                        width: 100,
                         height: 100,
                       ),
                       SizedBox(height: 20),
