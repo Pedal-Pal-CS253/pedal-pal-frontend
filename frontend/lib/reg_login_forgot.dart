@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:http/http.dart' as http;
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -20,6 +23,26 @@ final InputDecoration textFormFieldDecoration = InputDecoration(
 );
 
 class RegistrationPage extends StatelessWidget {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
+  String? validateEmail(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+        ? 'Enter a valid email address'
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,76 +55,128 @@ class RegistrationPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
-            child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
-                  child:
-                  Image.asset(
-                    'assets/pedal_pal_logo.png', // Adjust the path to your image
-                    width: 260, // Adjust the width as needed
-                  ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
+                        child: Image.asset(
+                          'assets/pedal_pal_logo.png',
+                          // Adjust the path to your image
+                          width: 260, // Adjust the width as needed
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 40.0),
+                      child: Text(
+                        'Welcome to Pedal Pal',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: nameController,
+                      decoration: textFormFieldDecoration.copyWith(
+                        labelText: 'Your Full Name',
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    TextFormField(
+                      controller: phoneController,
+                      decoration: textFormFieldDecoration.copyWith(
+                        labelText: 'Your Phone Number',
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    TextFormField(
+                      controller: emailController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: validateEmail,
+                      decoration: textFormFieldDecoration.copyWith(
+                        labelText: 'Your Email Address',
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: textFormFieldDecoration.copyWith(
+                        labelText: 'Password',
+                      ),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 20.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF1A2758),
+                      ),
+                      onPressed: () {
+                        sendRegistrationRequest(
+                          context,
+                          emailController.text,
+                          passwordController.text,
+                          phoneController.text,
+                          nameController.text,
+                        );
+                      },
+                      child: Text(
+                        'Create an account',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 40.0),
-                child: Text(
-                  'Welcome to Pedal Pal',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                  ),
-                ),
-              ),
-              TextFormField(
-                decoration: textFormFieldDecoration.copyWith(
-                labelText: 'Your Full Name',
-                ),
-              ),
-              SizedBox(height: 15.0),
-              TextFormField(
-              decoration: textFormFieldDecoration.copyWith(
-                labelText: 'Your Phone Number',
-                ),
-              ),
-              SizedBox(height: 15.0),
-              TextFormField(
-                decoration: textFormFieldDecoration.copyWith(
-                labelText: 'Your Email Address',
-                ),
-              ),
-              SizedBox(height: 15.0),
-              TextFormField(
-                decoration: textFormFieldDecoration.copyWith(
-                labelText: 'Password',
-                ),
-              obscureText: true,
-              ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-              style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF1A2758),
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/otp_verification');
-              },
-              child: Text('Create an account',
-                style: TextStyle( fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                ),
-              ),
-            ),
-            ],
-            ),
-            ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<http.Response> sendRegistrationRequest(BuildContext context,
+      String email, String password, String phone, String name) async {
+    // TODO: change host
+    var uri = Uri(
+      scheme: 'http',
+      host: '10.0.2.2',
+      path: 'auth/register/',
+      port: 8000,
+    );
+
+    var firstName = name.split(' ')[0];
+    var lastName = name.substring(firstName.length);
+
+    var body = jsonEncode({
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'first_name': firstName,
+      'last_name': lastName
+    });
+
+    LoadingIndicatorDialog().show(context);
+    // TODO: add OTP validation
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      Navigator.pushNamed(context, '/login'); // TODO: go to account created page
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
+
+    return response;
   }
 }
 
@@ -136,12 +211,11 @@ class OTPVerificationPage extends StatelessWidget {
               },
             ),
             SizedBox(height: 20.0),
-            Center(child:
-            Text('Didn\'t receive the Code?'),
+            Center(
+              child: Text('Didn\'t receive the Code?'),
             ),
             Center(
-              child:
-              ElevatedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   // Resend OTP
                 },
@@ -153,15 +227,17 @@ class OTPVerificationPage extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: EdgeInsets.only(bottom: 20.0),
-                child:               ElevatedButton(
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF1A2758),
                   ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/account_created');
                   },
-                  child: Text('Verify',
-                    style: TextStyle( fontSize: 18.0,
+                  child: Text(
+                    'Verify',
+                    style: TextStyle(
+                      fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -175,6 +251,7 @@ class OTPVerificationPage extends StatelessWidget {
     );
   }
 }
+
 class AccountCreatedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -187,32 +264,35 @@ class AccountCreatedPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(height: 20.0),
-            Text('Account Created Succesfully!',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            Text(
+              'Account Created Succesfully!',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text('Your account has been created successfully!'),
             Spacer(),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  margin: EdgeInsets.only(bottom: 20.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF1A2758),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    child: Text('Continue',
-                      style: TextStyle( fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                margin: EdgeInsets.only(bottom: 20.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1A2758),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'Continue',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
+                ),
               ),
             ),
           ],
@@ -237,72 +317,78 @@ class LoginPage extends StatelessWidget {
             Center(
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
-                child:
-                Image.asset(
+                child: Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
                   width: 260, // Adjust the width as needed
                 ),
               ),
             ),
             Expanded(
-            child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              SizedBox(height: 20.0),
-              TextFormField(
-              decoration: textFormFieldDecoration.copyWith(labelText: 'Your phone number'),
-            ),
-              SizedBox(height: 20.0),
-              TextFormField(
-              decoration: textFormFieldDecoration.copyWith(labelText: 'Password'),
-              obscureText: true,
-            ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1A2758),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/');
-                },
-                child: Text('Login',
-                  style: TextStyle( fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/forgot_password'); // Navigate to forgot password page
-                },
-                child: Text('Forgot Password?'),
-              ),
-            ),
-            SizedBox(height: 70.0),
-            Align(
-                alignment: Alignment.center,
-                  child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Not on Pedal Pal Yet? '),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/registration'); // Navigate to forgot password page
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      decoration: textFormFieldDecoration.copyWith(
+                          labelText: 'Your phone number'),
+                    ),
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      decoration: textFormFieldDecoration.copyWith(
+                          labelText: 'Password'),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 20.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF1A2758),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/');
                       },
-                      child: Text('Sign Up!',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context,
+                              '/forgot_password'); // Navigate to forgot password page
+                        },
+                        child: Text('Forgot Password?'),
+                      ),
+                    ),
+                    SizedBox(height: 70.0),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Not on Pedal Pal Yet? '),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context,
+                                  '/registration'); // Navigate to forgot password page
+                            },
+                            child: Text(
+                              'Sign Up!',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
+                ),
               ),
-            ),
-            ],
-            ),
-            ),
             ),
           ],
         ),
@@ -326,47 +412,50 @@ class ForgotPasswordPage extends StatelessWidget {
             Center(
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
-                child:
-                Image.asset(
+                child: Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
                   width: 260, // Adjust the width as needed
                 ),
               ),
             ),
             Expanded(
-            child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-            TextFormField(
-              decoration: textFormFieldDecoration.copyWith(labelText: 'Enter Email'),
-            ),
-            SizedBox(height: 20.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1A2758),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    TextFormField(
+                      decoration: textFormFieldDecoration.copyWith(
+                          labelText: 'Enter Email'),
+                    ),
+                    SizedBox(height: 20.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF1A2758),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/password_reset');
+                      },
+                      child: Text(
+                        'Send a Link',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context,
+                              '/login'); // Navigate to forgot password page
+                        },
+                        child: Text('Login?'),
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/password_reset');
-                },
-                child: Text('Send a Link',
-                  style: TextStyle( fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/login'); // Navigate to forgot password page
-                },
-                child: Text('Login?'),
-              ),
-              ),
-              ],
-              ),
               ),
             ),
           ],
@@ -391,46 +480,50 @@ class PasswordResetPage extends StatelessWidget {
             Center(
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
-                child:
-                Image.asset(
+                child: Image.asset(
                   'assets/pedal_pal_logo.png', // Adjust the path to your image
                   width: 260, // Adjust the width as needed
                 ),
               ),
             ),
             Expanded(
-            child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              SizedBox(height: 20.0),
-              TextFormField(
-              decoration: textFormFieldDecoration.copyWith(labelText: 'New Password'),
-              obscureText: true,
-            ),
-              SizedBox(height: 20.0),
-              TextFormField(
-              decoration: textFormFieldDecoration.copyWith(labelText: 'Confirm Password'),
-              obscureText: true,
-            ),
-             SizedBox(height: 20.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1A2758),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/password_reset_successful');
-                },
-                child: Text('Reset Password',
-                  style: TextStyle( fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      decoration: textFormFieldDecoration.copyWith(
+                          labelText: 'New Password'),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      decoration: textFormFieldDecoration.copyWith(
+                          labelText: 'Confirm Password'),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 20.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF1A2758),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, '/password_reset_successful');
+                      },
+                      child: Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-            ),
-            ),
             ),
           ],
         ),
@@ -459,8 +552,10 @@ class PasswordResetSuccessfulPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/login');
               },
-              child: Text('Continue',
-                style: TextStyle( fontSize: 18.0,
+              child: Text(
+                'Continue',
+                style: TextStyle(
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
