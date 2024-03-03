@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DescribeIssue())
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssueReportingScreen())
                   );
                 },
                 child: Text('Describe Issue')

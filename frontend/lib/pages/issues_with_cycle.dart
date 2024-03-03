@@ -31,12 +31,6 @@ class IssuesWithCycle extends StatelessWidget {
               SizedBox(height: 0.0),
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
                   SizedBox(width: 16.0),
                   Text(
                     'Issues with the cycle',
