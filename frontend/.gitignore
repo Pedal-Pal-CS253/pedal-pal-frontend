@@ -44,3 +44,4 @@ app.*.map.json
 
 # To store api keys and stuff
 *.env
+android/secrets.properties

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(RideOver());
 }
 
-class MyApp extends StatelessWidget {
+class RideOver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'C:\\pedal-pal-frontend2\\flutter_application_3\\flutter_application_3\\lib\\confirmation.png',
-                        width: 25,
+                        'assets/confirmation.png',
+                        width: 100,
                         height: 100,
                       ),
                       SizedBox(height: 20),
