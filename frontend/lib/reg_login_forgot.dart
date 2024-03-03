@@ -85,7 +85,7 @@ class RegistrationPage extends StatelessWidget {
               backgroundColor: Color(0xFF1A2758),
               ),
               onPressed: () {
-              Navigator.pushNamed(context, '/otp_verification');
+                Navigator.pushNamed(context, '/otp_verification');
               },
               child: Text('Create an account',
                 style: TextStyle( fontSize: 18.0,

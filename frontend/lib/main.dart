@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/wallet_home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/reg_login_forgot.dart';
 import 'pages/map_page.dart';
@@ -77,15 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             // Button to navigate to the wallet page
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WalletHomePage()),
-                );
-              },
-              child: Text('Open Wallet'),
-            ),
 
             ElevatedButton(
               onPressed: () {

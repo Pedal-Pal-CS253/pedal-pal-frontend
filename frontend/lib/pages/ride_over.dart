@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/issues_with_cycle.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'C:\\pedal-pal-frontend2\\flutter_application_3\\flutter_application_3\\lib\\confirmation.png',
+                        'assets/confirmation.png',
                         width: 25,
                         height: 100,
                       ),
@@ -58,7 +59,8 @@ class MyApp extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Add your Feedback button functionality here
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => IssuesWithCycle()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 14, 130, 224),
