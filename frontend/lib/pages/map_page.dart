@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:frontend/wallet_home_page.dart';
-import 'package:frontend/reg_login_forgot.dart';
+import 'package:frontend/pages/wallet_home_page.dart';
+import 'package:frontend/pages/reg_login_forgot.dart';
 import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/main.dart';

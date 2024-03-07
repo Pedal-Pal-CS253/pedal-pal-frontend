@@ -106,23 +106,23 @@ class AddBalanceScreen extends State<ABS> {
       razorpay.open(options);
 
     }catch(e){
-      print(e.toString());
+      debugPrint(e.toString());
     }
 
   }
 
   void handlerPaymentSuccess(){
-    print("Payment success");
+    debugPrint("Payment success");
     Fluttertoast.showToast(msg : "Payment Success!", toastLength: Toast.LENGTH_SHORT);
   }
 
   void handlerErrorFailure(){
-    print("Pament error");
+    debugPrint("Pament error");
     Fluttertoast.showToast(msg : "Payment Failed!", toastLength: Toast.LENGTH_SHORT);
   }
 
   void handlerExternalWallet(){
-    print("External Wallet");
+    debugPrint("External Wallet");
     Fluttertoast.showToast(msg : "External Wallet", toastLength: Toast.LENGTH_SHORT);
   }
 
