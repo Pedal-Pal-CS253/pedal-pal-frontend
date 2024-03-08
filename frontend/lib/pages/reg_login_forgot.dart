@@ -147,10 +147,9 @@ class RegistrationPage extends StatelessWidget {
       String password, String phone, String name) async {
     // TODO: change host
     var uri = Uri(
-      scheme: 'http',
-      host: '10.0.2.2',
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
       path: 'auth/register/',
-      port: 8000,
     );
 
     var firstName = name.split(' ')[0];
@@ -412,12 +411,10 @@ class LoginPage extends StatelessWidget {
 
   void sendLoginRequest(
       BuildContext context, String email, String password) async {
-    // TODO: change host
     var uri = Uri(
-      scheme: 'http',
-      host: '10.0.2.2',
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
       path: 'auth/login/',
-      port: 8000,
     );
 
     var body = jsonEncode({
@@ -434,14 +431,13 @@ class LoginPage extends StatelessWidget {
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
       var tokenUri = Uri(
-        scheme: 'http',
-        host: '10.0.2.2',
-        path: 'auth/api_token_auth/',
-        port: 8000,
+        scheme: 'https',
+        host: 'pedal-pal-backend.vercel.app',
+        path: 'auth/get_auth_token/',
       );
 
       var tokenBody = jsonEncode({
-        'username': email,
+        'email': email,
         'password': password,
       });
 
@@ -542,9 +538,8 @@ class ForgotPasswordPage extends StatelessWidget {
     );
   }
 
-
-  Future<http.Response> getEmailForPasswordReset(BuildContext context,
-      String email) async {
+  Future<http.Response> getEmailForPasswordReset(
+      BuildContext context, String email) async {
     var uri = Uri.https('pedal-pal-backend.vercel.app', 'auth/password_reset/');
 
     var body = jsonEncode({
@@ -560,7 +555,8 @@ class ForgotPasswordPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => OpenEmail()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OpenEmail()));
     } else {
       AlertPopup().show(context, text: response.body);
     }
@@ -589,7 +585,6 @@ class OpenEmail extends StatelessWidget {
   }
 }
 
-
 class PasswordResetPage extends StatelessWidget {
   final String token;
   TextEditingController password = TextEditingController();
@@ -597,7 +592,7 @@ class PasswordResetPage extends StatelessWidget {
   var _password = '';
   var _confirmPassword = '';
 
-  PasswordResetPage({Key? key, required this.token}) : super(key : key);
+  PasswordResetPage({Key? key, required this.token}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -636,27 +631,30 @@ class PasswordResetPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
-                      decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Confirm Password'),
-                      obscureText: true,
-                      onChanged: (value) {
+                        decoration: textFormFieldDecoration.copyWith(
+                            labelText: 'Confirm Password'),
+                        obscureText: true,
+                        onChanged: (value) {
                           _confirmPassword = value;
-                      }
-                    ),
+                        }),
                     SizedBox(height: 20.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        if (_password != _confirmPassword){ // you can add your statements here
-                        Fluttertoast.showToast(msg : "Passwords do not match! Please re-type again.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          textColor: Colors.redAccent,
-                          fontSize: 16.0);
+                        if (_password != _confirmPassword) {
+                          // you can add your statements here
+                          Fluttertoast.showToast(
+                              msg:
+                                  "Passwords do not match! Please re-type again.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              textColor: Colors.redAccent,
+                              fontSize: 16.0);
                         } else {
-                          sendPasswordResetRequest(context, password.text, token);
+                          sendPasswordResetRequest(
+                              context, password.text, token);
                         }
                       },
                       child: Text(
@@ -678,17 +676,18 @@ class PasswordResetPage extends StatelessWidget {
     );
   }
 
-  Future<http.Response> sendPasswordResetRequest(BuildContext context,
-      String password, String token) async {
+  Future<http.Response> sendPasswordResetRequest(
+      BuildContext context, String password, String token) async {
     final Map<String, String> _queryParameters = <String, String>{
       'token': token,
     };
 
-    var uri = Uri.https('pedal-pal-backend.vercel.app', 'auth/password_reset/confirm/', _queryParameters);
+    var uri = Uri.https('pedal-pal-backend.vercel.app',
+        'auth/password_reset/confirm/', _queryParameters);
 
     var body = jsonEncode({
       'password': password,
-      'token' : token,
+      'token': token,
     });
 
     LoadingIndicatorDialog().show(context);
@@ -700,7 +699,10 @@ class PasswordResetPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetSuccessfulPage()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PasswordResetSuccessfulPage()));
     } else {
       AlertPopup().show(context, text: response.body);
     }
@@ -708,7 +710,6 @@ class PasswordResetPage extends StatelessWidget {
     return response;
   }
 }
-
 
 class PasswordResetSuccessfulPage extends StatelessWidget {
   @override
