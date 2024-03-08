@@ -25,10 +25,8 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Pedal Pal',
       theme: ThemeData(
@@ -44,9 +42,9 @@ class MyApp extends StatelessWidget {
         '/account_created': (context) => AccountCreatedPage(),
         '/login': (context) => LoginPage(),
         '/forgot_password': (context) => ForgotPasswordPage(),
-        '/password_reset': (context) => PasswordResetPage(token : ''),
-        '/password_reset_successful': (context) => PasswordResetSuccessfulPage(),
-
+        '/password_reset': (context) => PasswordResetPage(token: ''),
+        '/password_reset_successful': (context) =>
+            PasswordResetSuccessfulPage(),
       },
     );
   }
@@ -76,10 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _handleDeepLink(Uri? uri) {
-    if(uri!.path == "/auth/password_reset/confirm/") {
-        final String token = uri.queryParameters['token']!;
+    if (uri!.path == "/auth/password_reset/confirm/") {
+      final String token = uri.queryParameters['token']!;
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage(token : token)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PasswordResetPage(token: token)));
     }
   }
 
@@ -92,8 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
-          textColor: Colors.white
-      );
+          textColor: Colors.white);
       try {
         final initialURI = await getInitialUri();
         // Use the initialURI and warn the user if it is not correct,
@@ -164,12 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,24 +179,38 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 260, // Adjust the width as needed
             ),
             ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegistrationPage()),
+                  );
+                },
+                child: Text('Register')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                child: Text('Login')),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PasswordResetPage(token: '')));
+                },
+                child: Text('Change Password')),
+            ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()),
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
               },
-              child: Text('Register')
-            ),
-            ElevatedButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-              child: Text('Login')
+              child: Text('Login'),
             ),
 
-            ElevatedButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage(token: ''))
-              );
-            }, child: Text('Change Password')
-            ),
             // Button to navigate to the wallet page
             ElevatedButton(
               onPressed: () {
@@ -210,56 +223,57 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage()),
-                );
-              },
-              child: Text('Dashboard')
-            ),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RideScreen())
-                );
-              },
-              child: Text('Ride Screen')
-            ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MapPage()),
+                  );
+                },
+                child: Text('Dashboard')),
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssueReportingScreen())
-                  );
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RideScreen()));
                 },
-                child: Text('Describe Issue')
-            ),
+                child: Text('Ride Screen')),
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackSubmitted())
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => IssueReportingScreen()));
                 },
-                child: Text('Feedback Submitted')
-            ),
+                child: Text('Describe Issue')),
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssuesWithCycle())
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FeedbackSubmitted()));
                 },
-                child: Text('Issue with Cycle')
-            ),
+                child: Text('Feedback Submitted')),
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => RideOver())
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => IssuesWithCycle()));
                 },
-                child: Text('Ride Screen')
-            )
+                child: Text('Issue with Cycle')),
+
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RideOver()));
+                },
+                child: Text('Ride Screen'))
           ],
         ),
       ),
     );
   }
 }
-

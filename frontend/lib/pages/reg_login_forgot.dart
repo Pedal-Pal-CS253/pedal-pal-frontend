@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/alerts.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/main.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -143,9 +143,9 @@ class RegistrationPage extends StatelessWidget {
     );
   }
 
-  Future<http.Response> sendRegistrationRequest(BuildContext context,
-      String email, String password, String phone, String name) async {
-    // TODO : change host
+  void sendRegistrationRequest(BuildContext context, String email,
+      String password, String phone, String name) async {
+    // TODO: change host
     var uri = Uri(
       scheme: 'http',
       host: '10.0.2.2',
@@ -173,12 +173,11 @@ class RegistrationPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/login'); // TODO: go to account created page
+      Navigator.pushNamed(
+          context, '/login'); // TODO: go to account created page
     } else {
       AlertPopup().show(context, text: response.body);
     }
-
-    return response;
   }
 }
 
@@ -305,6 +304,9 @@ class AccountCreatedPage extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -332,13 +334,17 @@ class LoginPage extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: emailController,
                       decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Your phone number'),
+                        labelText: 'Your Email',
+                      ),
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: passwordController,
                       decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Password'),
+                        labelText: 'Password',
+                      ),
                       obscureText: true,
                     ),
                     SizedBox(height: 20.0),
@@ -347,7 +353,11 @@ class LoginPage extends StatelessWidget {
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/');
+                        sendLoginRequest(
+                          context,
+                          emailController.text,
+                          passwordController.text,
+                        );
                       },
                       child: Text(
                         'Login',
@@ -362,8 +372,10 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context,
-                              '/forgot_password'); // Navigate to forgot password page
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot_password',
+                          ); // Navigate to forgot password page
                         },
                         child: Text('Forgot Password?'),
                       ),
@@ -396,6 +408,64 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void sendLoginRequest(
+      BuildContext context, String email, String password) async {
+    // TODO: change host
+    var uri = Uri(
+      scheme: 'http',
+      host: '10.0.2.2',
+      path: 'auth/login/',
+      port: 8000,
+    );
+
+    var body = jsonEncode({
+      'email': email,
+      'password': password,
+    });
+
+    LoadingIndicatorDialog().show(context);
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      var tokenUri = Uri(
+        scheme: 'http',
+        host: '10.0.2.2',
+        path: 'auth/api_token_auth/',
+        port: 8000,
+      );
+
+      var tokenBody = jsonEncode({
+        'username': email,
+        'password': password,
+      });
+
+      LoadingIndicatorDialog().show(context);
+      var tokenResponse = await http.post(
+        tokenUri,
+        headers: {"Content-Type": "application/json"},
+        body: tokenBody,
+      );
+      LoadingIndicatorDialog().dismiss();
+
+      if (tokenResponse.statusCode == 200) {
+        var token = jsonDecode(tokenResponse.body)['token'];
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "auth_token", value: token);
+        print(token);
+        AlertPopup().show(context, text: token);
+      } else {
+        print(tokenResponse.body);
+        AlertPopup().show(context, text: tokenResponse.body);
+      }
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
   }
 }
 
