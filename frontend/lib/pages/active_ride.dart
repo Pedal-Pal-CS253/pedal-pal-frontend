@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'models/profile.dart';
+import '../models/profile.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -156,8 +157,3 @@ class _RideScreenState extends State<RideScreen> {
   }
 }
 
-      ),
-      
-    );
-  }
-}

@@ -156,7 +156,7 @@ class _SettingPageState extends State<SettingPage> {
                     style: TextStyle(fontSize: 20.0, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blueAccent,
+                    backgroundColor: Colors.blueAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -317,7 +317,7 @@ class _SettingPageState extends State<SettingPage> {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF1a2758),
+                      backgroundColor: Color(0xFF1a2758),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0), // Increased border radius
                       ),
