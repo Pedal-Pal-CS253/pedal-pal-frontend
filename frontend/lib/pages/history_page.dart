@@ -1,5 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class MyApp extends StatelessWidget {
   @override
@@ -11,28 +14,69 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HistoryPage extends StatelessWidget {
-  final List<HistoryData> historyDataList = [
-    HistoryData(
-      startLocation: 'Hall 2',
-      startTime: '12:02',
-      startDate: '24 Feb',
-      endLocation: 'DJAC',
-      endTime: '13:02',
-      endDate: '25 Feb',
-      duration: '1h 0m',
-    ),
-    HistoryData(
-      startLocation: 'RM',
-      startTime: '10:30',
-      startDate: '25 Feb',
-      endLocation: 'Hall 2',
-      endTime: '12:00',
-      endDate: '25 Feb',
-      duration: '1h 30m',
-    ),
-    // Add more HistoryData objects as needed
-  ];
+class HistoryPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  List<HistoryData> historyDataList = [];
+
+  Future<void> historyRequest() async {
+    // TODO: change host
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'analytics/history/',
+    );
+
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    var token = '7e262ce894a090116e6fb1c5cbf5c4c454ac46f3';
+
+    try {
+      var response = await http.post(
+        uri,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Token $token"
+        },
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var resBody = jsonDecode(response.body) as List<dynamic>;
+        print(resBody);
+        // Update the state variable with the fetched data
+        historyDataList = resBody.map((data) {
+          return HistoryData(
+            startLocation: (data['start_hub']).toString(),
+            startTime: data['start_time'],
+            startDate: "Start Date",
+            endLocation: 'End Location',
+            endTime: data['start_time'],
+            endDate: 'End Date',
+            duration: '1h 2m',
+          );
+        }).toList();
+
+        setState(() {});
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error Making Request: $e');
+    }
+  }
+
+  void init() async {
+    await historyRequest();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
 
   @override
   Widget build(BuildContext context) {
