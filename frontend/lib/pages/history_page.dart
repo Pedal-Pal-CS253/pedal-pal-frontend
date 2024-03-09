@@ -31,7 +31,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
 
     FlutterSecureStorage storage = FlutterSecureStorage();
-    var token = '7e262ce894a090116e6fb1c5cbf5c4c454ac46f3';
+    var token = await storage.read(key: 'auth_token');
 
     try {
       var response = await http.post(
