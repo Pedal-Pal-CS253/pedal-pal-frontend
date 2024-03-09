@@ -18,7 +18,7 @@ class AlertPopup {
     }
     showDialog<void>(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
         _context = context;
         isDisplayed = true;

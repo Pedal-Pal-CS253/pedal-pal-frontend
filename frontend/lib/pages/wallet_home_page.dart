@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class WalletHomePage extends StatelessWidget {
   @override
@@ -11,13 +16,56 @@ class WalletHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('My Wallet'),
       ),
-      body: WalletBalanceScreen(),
+      body: WBS(),
     );
   }
 }
 
+class WBS extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => WalletBalanceScreen();
+}
 
-class WalletBalanceScreen extends StatelessWidget {
+class WalletBalanceScreen extends State<WBS> {
+  var balance = "Loading...";
+
+  Future<void> fetchBalance() async {
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'payment/get_balance/',
+    );
+
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    var token = await storage.read(key: 'auth_token');
+
+    print("Using token $token");
+
+    var response = await http.get(uri, headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Token $token",
+    });
+
+    print(response);
+
+    if (response.statusCode == 200) {
+      balance = '₹${jsonDecode(response.body)['balance']}';
+      setState(() {});
+    } else {
+      print("error: ${response.body}");
+    }
+  }
+
+  void init() async {
+    await fetchBalance();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -29,8 +77,7 @@ class WalletBalanceScreen extends StatelessWidget {
             style: TextStyle(fontSize: 20),
           ),
           Text(
-            // TODO: Fetch Wallet Balance and display here
-            '\₹500.00',
+            balance,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20),
@@ -48,7 +95,8 @@ class WalletBalanceScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TransactionHistoryScreen()),
+                MaterialPageRoute(
+                    builder: (context) => TransactionHistoryScreen()),
               );
             },
             child: Text('View Transaction History'),
@@ -65,7 +113,6 @@ class ABS extends StatefulWidget {
 }
 
 class AddBalanceScreen extends State<ABS> {
-
   Razorpay razorpay = Razorpay();
   TextEditingController textEditingController = new TextEditingController();
 
@@ -87,43 +134,62 @@ class AddBalanceScreen extends State<ABS> {
     razorpay.clear();
   }
 
-  void openCheckout(){
+  void openCheckout() {
     var options = {
-      "key" : dotenv.env['RAZORPAY_API_KEY'],
-      "amount" : num.parse(textEditingController.text)*100,
-      "name" : "PedalPal",
-      "description" : "Add Balance to your PedalPal Wallet",
-      "prefill" : {
-        "contact" : "6969696969",
-        "email" : "admin@pedalpal.com"
-      },
-      "external" : {
-        "wallets" : ["paytm"]
+      "key": dotenv.env['RAZORPAY_API_KEY'],
+      "amount": num.parse(textEditingController.text) * 100,
+      "name": "PedalPal",
+      "description": "Add Balance to your PedalPal Wallet",
+      "prefill": {"contact": "6969696969", "email": "admin@pedalpal.com"},
+      "external": {
+        "wallets": ["paytm"]
       }
     };
 
-    try{
+    try {
       razorpay.open(options);
-
-    }catch(e){
-      print(e.toString());
+    } catch (e) {
+      debugPrint(e.toString());
     }
-
   }
 
-  void handlerPaymentSuccess(){
-    print("Payment success");
-    Fluttertoast.showToast(msg : "Payment Success!", toastLength: Toast.LENGTH_SHORT);
+  void handlerPaymentSuccess(PaymentSuccessResponse instance) async {
+    debugPrint("Payment success");
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'payment/update_balance/',
+    );
+
+    var body = jsonEncode({'amount': num.parse(textEditingController.text)});
+    var token = await FlutterSecureStorage().read(key: 'auth_token');
+
+    var response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: "Payment Successful!");
+    } else {
+      Fluttertoast.showToast(msg: "Payment successful but failed to update database! Please contact support team.");
+    }
   }
 
-  void handlerErrorFailure(){
-    print("Pament error");
-    Fluttertoast.showToast(msg : "Payment Failed!", toastLength: Toast.LENGTH_SHORT);
+  void handlerErrorFailure() {
+    debugPrint("Payment error");
+    Fluttertoast.showToast(
+        msg: "Payment Failed!", toastLength: Toast.LENGTH_SHORT);
   }
 
-  void handlerExternalWallet(){
-    print("External Wallet");
-    Fluttertoast.showToast(msg : "External Wallet", toastLength: Toast.LENGTH_SHORT);
+  void handlerExternalWallet() {
+    debugPrint("External Wallet");
+    Fluttertoast.showToast(
+        msg: "External Wallet", toastLength: Toast.LENGTH_SHORT);
   }
 
   Widget build(BuildContext context) {
@@ -139,12 +205,12 @@ class AddBalanceScreen extends State<ABS> {
               controller: textEditingController,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
               ],
               decoration: InputDecoration(
-              labelText: 'Enter Amount',
-              hintText: '0.00',
-              border: OutlineInputBorder(),
+                labelText: 'Enter Amount',
+                hintText: '0.00',
+                border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -153,12 +219,15 @@ class AddBalanceScreen extends State<ABS> {
                 return null;
               },
             ),
-            SizedBox(height: 12,),
+            SizedBox(
+              height: 12,
+            ),
             ElevatedButton(
-              child: Text("Add Balance", style: TextStyle(
-                  color: Colors.blueAccent
-              ),),
-              onPressed: (){
+              child: Text(
+                "Add Balance",
+                style: TextStyle(color: Colors.blueAccent),
+              ),
+              onPressed: () {
                 openCheckout();
               },
             )

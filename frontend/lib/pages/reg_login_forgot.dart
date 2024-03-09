@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/alerts.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -22,26 +24,26 @@ final InputDecoration textFormFieldDecoration = InputDecoration(
   ),
 );
 
+String? validateEmail(String? value) {
+  const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+  final regex = RegExp(pattern);
+
+  return value!.isNotEmpty && !regex.hasMatch(value)
+      ? 'Enter a valid email address'
+      : null;
+}
+
 class RegistrationPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-
-  String? validateEmail(String? value) {
-    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
-        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
-        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
-        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
-        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
-        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
-        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
-    final regex = RegExp(pattern);
-
-    return value!.isNotEmpty && !regex.hasMatch(value)
-        ? 'Enter a valid email address'
-        : null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,14 +143,13 @@ class RegistrationPage extends StatelessWidget {
     );
   }
 
-  Future<http.Response> sendRegistrationRequest(BuildContext context,
-      String email, String password, String phone, String name) async {
+  void sendRegistrationRequest(BuildContext context, String email,
+      String password, String phone, String name) async {
     // TODO: change host
     var uri = Uri(
-      scheme: 'http',
-      host: '10.0.2.2',
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
       path: 'auth/register/',
-      port: 8000,
     );
 
     var firstName = name.split(' ')[0];
@@ -171,12 +172,11 @@ class RegistrationPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/login'); // TODO: go to account created page
+      Navigator.pushNamed(
+          context, '/login'); // TODO: go to account created page
     } else {
       AlertPopup().show(context, text: response.body);
     }
-
-    return response;
   }
 }
 
@@ -303,6 +303,9 @@ class AccountCreatedPage extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -330,13 +333,17 @@ class LoginPage extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: emailController,
                       decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Your phone number'),
+                        labelText: 'Your Email',
+                      ),
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: passwordController,
                       decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Password'),
+                        labelText: 'Password',
+                      ),
                       obscureText: true,
                     ),
                     SizedBox(height: 20.0),
@@ -345,7 +352,11 @@ class LoginPage extends StatelessWidget {
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/');
+                        sendLoginRequest(
+                          context,
+                          emailController.text,
+                          passwordController.text,
+                        );
                       },
                       child: Text(
                         'Login',
@@ -360,8 +371,10 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context,
-                              '/forgot_password'); // Navigate to forgot password page
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot_password',
+                          ); // Navigate to forgot password page
                         },
                         child: Text('Forgot Password?'),
                       ),
@@ -395,9 +408,66 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
+  void sendLoginRequest(
+      BuildContext context, String email, String password) async {
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'auth/login/',
+    );
+
+    var body = jsonEncode({
+      'email': email,
+      'password': password,
+    });
+
+    LoadingIndicatorDialog().show(context);
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      var tokenUri = Uri(
+        scheme: 'https',
+        host: 'pedal-pal-backend.vercel.app',
+        path: 'auth/get_auth_token/',
+      );
+
+      var tokenBody = jsonEncode({
+        'email': email,
+        'password': password,
+      });
+
+      LoadingIndicatorDialog().show(context);
+      var tokenResponse = await http.post(
+        tokenUri,
+        headers: {"Content-Type": "application/json"},
+        body: tokenBody,
+      );
+      LoadingIndicatorDialog().dismiss();
+
+      if (tokenResponse.statusCode == 200) {
+        var token = jsonDecode(tokenResponse.body)['token'];
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "auth_token", value: token);
+        print(token);
+        AlertPopup().show(context, text: token);
+      } else {
+        print(tokenResponse.body);
+        AlertPopup().show(context, text: tokenResponse.body);
+      }
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
+  }
 }
 
 class ForgotPasswordPage extends StatelessWidget {
+  TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -424,6 +494,9 @@ class ForgotPasswordPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     TextFormField(
+                      controller: emailController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: validateEmail,
                       decoration: textFormFieldDecoration.copyWith(
                           labelText: 'Enter Email'),
                     ),
@@ -433,7 +506,8 @@ class ForgotPasswordPage extends StatelessWidget {
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/password_reset');
+                        // Navigator.pushNamed(context, '/password_reset');
+                        getEmailForPasswordReset(context, emailController.text);
                       },
                       child: Text(
                         'Send a Link',
@@ -463,9 +537,63 @@ class ForgotPasswordPage extends StatelessWidget {
       ),
     );
   }
+
+  Future<http.Response> getEmailForPasswordReset(
+      BuildContext context, String email) async {
+    var uri = Uri.https('pedal-pal-backend.vercel.app', 'auth/password_reset/');
+
+    var body = jsonEncode({
+      'email': email,
+    });
+
+    LoadingIndicatorDialog().show(context);
+
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OpenEmail()));
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
+
+    return response;
+  }
+}
+
+class OpenEmail extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Forgot Password'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Please check your email for the password reset link.'),
+            SizedBox(height: 20.0),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class PasswordResetPage extends StatelessWidget {
+  final String token;
+  TextEditingController password = TextEditingController();
+  TextEditingController confirm_pass = TextEditingController();
+  var _password = '';
+  var _confirmPassword = '';
+
+  PasswordResetPage({Key? key, required this.token}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -493,24 +621,41 @@ class PasswordResetPage extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: password,
                       decoration: textFormFieldDecoration.copyWith(
                           labelText: 'New Password'),
                       obscureText: true,
+                      onChanged: (value) {
+                        _password = value;
+                      },
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
-                      decoration: textFormFieldDecoration.copyWith(
-                          labelText: 'Confirm Password'),
-                      obscureText: true,
-                    ),
+                        decoration: textFormFieldDecoration.copyWith(
+                            labelText: 'Confirm Password'),
+                        obscureText: true,
+                        onChanged: (value) {
+                          _confirmPassword = value;
+                        }),
                     SizedBox(height: 20.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(
-                            context, '/password_reset_successful');
+                        if (_password != _confirmPassword) {
+                          // you can add your statements here
+                          Fluttertoast.showToast(
+                              msg:
+                                  "Passwords do not match! Please re-type again.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              textColor: Colors.redAccent,
+                              fontSize: 16.0);
+                        } else {
+                          sendPasswordResetRequest(
+                              context, password.text, token);
+                        }
                       },
                       child: Text(
                         'Reset Password',
@@ -529,6 +674,40 @@ class PasswordResetPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<http.Response> sendPasswordResetRequest(
+      BuildContext context, String password, String token) async {
+    final Map<String, String> _queryParameters = <String, String>{
+      'token': token,
+    };
+
+    var uri = Uri.https('pedal-pal-backend.vercel.app',
+        'auth/password_reset/confirm/', _queryParameters);
+
+    var body = jsonEncode({
+      'password': password,
+      'token': token,
+    });
+
+    LoadingIndicatorDialog().show(context);
+
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PasswordResetSuccessfulPage()));
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
+
+    return response;
   }
 }
 
