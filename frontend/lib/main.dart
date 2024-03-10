@@ -212,15 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             // Button to navigate to the wallet page
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WalletHomePage()),
-                );
-              },
-              child: Text('Open Wallet'),
-            ),
 
             ElevatedButton(
                 onPressed: () {
@@ -233,8 +224,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssueReportingScreen(issues: [false,false,false,false]))
-                  );
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RideScreen(user: user)));
+                      print(user);
                 },
                 child: Text('Ride Screen')),
 

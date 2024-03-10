@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/issues_with_cycle.dart';
 
-void main() {
-  runApp(RideOver());
-}
 
 class RideOver extends StatelessWidget {
   @override
@@ -58,7 +56,8 @@ class RideOver extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Add your Feedback button functionality here
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => IssuesWithCycle()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 14, 130, 224),

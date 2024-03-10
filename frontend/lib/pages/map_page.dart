@@ -5,6 +5,8 @@ import 'package:frontend/pages/reg_login_forgot.dart';
 import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/models/hubs.dart';
+
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -60,31 +62,44 @@ class _MapPageState extends State<MapPage> {
       _showInfoContainer = true;
     });
   }
-  List<String> HUBS = [
-    'RM',
-    'Hall 6',
-    'Library',
-    'LH 20',
-    'Hall 5'
-  ];
-  List<int> CycleNum = [1,2,3,4,5];
-  List<LatLng> Coordinates = [
-    LatLng(26.514316, 80.234816),
-    LatLng(26.505147, 80.234617),
-    LatLng(26.512331, 80.233678),
-    LatLng(26.510890, 80.234255),
-    LatLng(26.509612, 80.228636),
-  ];
+  // List<String> HUBS = [
+  //   'RM',
+  //   'Hall 6',
+  //   'Library',
+  //   'LH 20',
+  //   'Hall 5'
+  // ];
+  // List<int> CycleNum = [1,2,3,4,5];
+  // List<LatLng> Coordinates = [
+  //   LatLng(26.514316, 80.234816),
+  //   LatLng(26.505147, 80.234617),
+  //   LatLng(26.512331, 80.233678),
+  //   LatLng(26.510890, 80.234255),
+  //   LatLng(26.509612, 80.228636),
+  // ];
+
+
+  List<LatLng> Coordinates = [];
+
+  void populateCoordinates(List<LatLng> coordinates) {
+    for (int i = 0; i < latitudeList.length; i++) {
+      coordinates.add(LatLng(latitudeList[i], longitudeList[i]));
+    }
+  }
+
 
   Set<Marker> _generateMarkers(int n) {
+    print("WE NOW GENERATE MARKERS:");
+    get_hubs();
     Set<Marker> markers = {};
-    for (int i = 1; i <= n; i++) {
+    populateCoordinates(Coordinates);
+    for (int i = 1; i <= hubIdList.length; i++) {
       markers.add(
         Marker(
-          markerId: MarkerId(HUBS[i-1]),
+          markerId: MarkerId(hubNameList[i-1]),
           position: Coordinates[i-1],
           onTap: () {
-            InfoForMarker(HUBS[i-1], Coordinates[i-1], CycleNum[i-1]);
+            InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1]);
           },
         ),
       );
@@ -126,7 +141,7 @@ class _MapPageState extends State<MapPage> {
                   Container(
                     height: 600,
                     child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
+                      initialCameraPosition: const CameraPosition(
                         target: LatLng(26.5113, 80.2329),
                         zoom: 13,
                       ),
@@ -138,158 +153,170 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
           if (_showInfoContainer)
-              Positioned.fill(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _showInfoContainer = false;
-                    });
-                  },
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: Container(
-                        height: 300,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0), // Adjust corner radius
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(1),
-                              // spreadRadius: 5.0, // Adjust shadow spread
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: 30, // Height adjusted to be a tenth of the container's height
-                                    child: Center(child: Text('SELECTED HUB')),
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showInfoContainer = false;
+                  });
+                },
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Container(
+                      height: 300,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        // Adjust corner radius
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(1),
+                            // spreadRadius: 5.0, // Adjust shadow spread
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 30,
+                                  // Height adjusted to be a tenth of the container's height
+                                  child: Center(child: Text('SELECTED HUB')),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 30,
+                                  // Height adjusted to be a tenth of the container's height
+                                  child: Center(
+                                      child: Text('CYCLES AVAILABLE')),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(child: Text(_PlaceOfMarker)),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(child: Text('$_CycleNum')),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(child: Text('Advanced Booking',
+                                    style: TextStyle(fontSize: 23,
+                                      fontWeight: FontWeight.bold,),)
                                   ),
                                 ),
-                                Expanded(
-                                  child: Container(
-                                    height: 30, // Height adjusted to be a tenth of the container's height
-                                    child: Center(child: Text('CYCLES AVAILABLE')),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: 50,
-                                    child: Center(child: Text(_PlaceOfMarker)),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    height: 50,
-                                    child: Center(child: Text('$_CycleNum')),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: 50,
-                                    child: Center(child: Text('Advanced Booking', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold,),)
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        ElevatedButton(
-                                          onPressed: () => _selectDate(context),
-                                          child: Text('Select Date'),
-                                        ),
-                                        Text(
-                                          '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        ElevatedButton(
-                                          onPressed: () => _selectTime(context),
-                                          child: Text('Select Time'),
-                                        ),
-                                        SizedBox(height: 20),
-                                        Text(
-                                          '${selectedTime?.hour}:${selectedTime?.minute}',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // Functionality to execute when the button is pressed
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, // Change the background color as per your requirement
-                                    ),
-                                    child: Text(
-                                      'Ride Now',
-                                      style: TextStyle(
-                                        color: Colors.white, // Change the text color as per your requirement
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () => _selectDate(context),
+                                        child: Text('Select Date'),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16.0),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // Functionality to execute when the button is pressed
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, // Change the background color as per your requirement
-                                    ),
-                                    child: Text(
-                                      'Book Now',
-                                      style: TextStyle(
-                                        color: Colors.white, // Change the text color as per your requirement
+                                      Text(
+                                        '${selectedDate?.year}-${selectedDate
+                                            ?.month}-${selectedDate?.day}',
+                                        style: TextStyle(fontSize: 18),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () => _selectTime(context),
+                                        child: Text('Select Time'),
+                                      ),
+                                      SizedBox(height: 20),
+                                      Text(
+                                        '${selectedTime?.hour}:${selectedTime
+                                            ?.minute}',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Functionality to execute when the button is pressed
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .blue, // Change the background color as per your requirement
+                                  ),
+                                  child: Text(
+                                    'Ride Now',
+                                    style: TextStyle(
+                                      color: Colors
+                                          .white, // Change the text color as per your requirement
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              SizedBox(width: 16.0),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Functionality to execute when the button is pressed
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .blue, // Change the background color as per your requirement
+                                  ),
+                                  child: Text(
+                                    'Book Now',
+                                    style: TextStyle(
+                                      color: Colors
+                                          .white, // Change the text color as per your requirement
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
+            ),
         ],
       ),
 
