@@ -35,7 +35,7 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
     var uri = Uri(
       scheme: 'http',
       host: '10.0.0.2',
-      path: 'feedbacks/',
+      path: 'maintenance/feedbacks/add/',
       port: 8000,
     );
 
@@ -43,7 +43,6 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
     var token = await storage.read(key: 'auth_token') ;
 
     var body = jsonEncode({
-      'user': token,
       'air_issues': issues[0],
       'sound_issues': issues[1],
       'brake_issues': issues[2],
