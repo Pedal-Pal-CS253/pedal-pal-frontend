@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/describe_issue.dart';
 
 
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
@@ -16,8 +13,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class IssuesWithCycle extends StatelessWidget {
+class IssuesWithCycle extends StatefulWidget {
   const IssuesWithCycle({Key? key}) : super(key: key);
+
+  @override
+  _IssuesWithCycleState createState() => _IssuesWithCycleState();
+}
+
+class _IssuesWithCycleState extends State<IssuesWithCycle> {
+  List<bool> selectedIssues = [false, false, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +68,10 @@ class IssuesWithCycle extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IssueItem(title: 'Tires low on air'),
-                IssueItem(title: 'Sounds while riding'),
-                IssueItem(title: 'Malfunctioning brakes'),
-                IssueItem(title: 'Chain fallen off'),
-                IssueItem(title: 'Other'),
+                IssueItem(title: 'Tires low on air', isSelected: selectedIssues[0] == true, onTap: () => toggleIssueSelection(0)),
+                IssueItem(title: 'Sounds while riding', isSelected: selectedIssues[1] == true, onTap: () => toggleIssueSelection(1)),
+                IssueItem(title: 'Malfunctioning brakes', isSelected: selectedIssues[2] == true, onTap: () => toggleIssueSelection(2)),
+                IssueItem(title: 'Chain fallen off', isSelected: selectedIssues[3] == true, onTap: () => toggleIssueSelection(3)),
               ],
             ),
             SizedBox(height: 20),
@@ -78,7 +81,7 @@ class IssuesWithCycle extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ((IssueReportingScreen()))),
+                    MaterialPageRoute(builder: (context) => IssueReportingScreen(issues: selectedIssues)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -96,41 +99,43 @@ class IssuesWithCycle extends StatelessWidget {
       ),
     );
   }
+
+  void toggleIssueSelection(int issue) {
+    setState(() {
+      if (selectedIssues[issue]) {
+        selectedIssues[issue] = false;
+      } else {
+        selectedIssues[issue] = true;
+      }
+    });
+  }
 }
 
-class IssueItem extends StatefulWidget {
+class IssueItem extends StatelessWidget {
   final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const IssueItem({Key? key, required this.title}) : super(key: key);
-
-  @override
-  _IssueItemState createState() => _IssueItemState();
-}
-
-class _IssueItemState extends State<IssueItem> {
-  bool _isSelected = false;
+  const IssueItem({Key? key, required this.title, required this.isSelected, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.grey[200], // Grey background color
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue : Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Text(widget.title),
+            child: Text(title),
           ),
           GestureDetector(
-            onTap: () {
-              setState(() {
-                _isSelected = !_isSelected;
-              });
-            },
             child: Container(
               width: 24,
               height: 35,
@@ -138,18 +143,36 @@ class _IssueItemState extends State<IssueItem> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: _isSelected ? Colors.blue : Colors.grey,
+                  color: isSelected ? Colors.blue : Colors.grey,
                   width: 2,
                 ),
-                color: _isSelected ? Colors.blue : Colors.transparent,
+                color: isSelected ? Colors.blue : Colors.transparent,
               ),
-              child: _isSelected
+              child: isSelected
                   ? Icon(Icons.check, size: 20, color: Colors.white)
                   : null,
             ),
           ),
         ],
       ),
+      )
+      //   padding: EdgeInsets.symmetric(horizontal: 10),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Expanded(
+      //         child: Text(
+      //           title,
+      //           style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+      //         ),
+      //       ),
+      //       isSelected
+      //           ? Icon(Icons.check, color: Colors.white)
+      //           : SizedBox(), // Empty SizedBox to maintain the layout
+      //     ],
+      //   ),
+      // ),
     );
   }
 }
+
