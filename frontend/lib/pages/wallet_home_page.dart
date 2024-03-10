@@ -9,6 +9,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/payment.dart';
+
 class WalletHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,7 @@ class WalletBalanceScreen extends State<WBS> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TransactionHistoryScreen()),
+                    builder: (context) => THS()),
               );
             },
             child: Text('View Transaction History'),
@@ -176,7 +178,9 @@ class AddBalanceScreen extends State<ABS> {
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: "Payment Successful!");
     } else {
-      Fluttertoast.showToast(msg: "Payment successful but failed to update database! Please contact support team.");
+      Fluttertoast.showToast(
+          msg:
+              "Payment successful but failed to update database! Please contact support team.");
     }
   }
 
@@ -238,24 +242,64 @@ class AddBalanceScreen extends State<ABS> {
   }
 }
 
-class TransactionHistoryScreen extends StatelessWidget {
+class THS extends StatefulWidget {
+  @override
+  TransactionHistoryScreen createState() => TransactionHistoryScreen();
+}
+
+class TransactionHistoryScreen extends State<THS> {
+  Future<List<Transaction>> getTransactions() async {
+    List<Transaction> data = [];
+
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'payment/get_transactions/',
+    );
+
+    var token = await FlutterSecureStorage().read(key: 'auth_token');
+
+    var response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token $token'
+      },
+    );
+
+    print(response.body);
+
+    Iterable transactions = json.decode(response.body);
+
+    for (var transaction in transactions) {
+      var temp = Transaction(transaction['status'].toString(), num.parse(transaction['amount'].toString()).toInt());
+      data.add(temp);
+    }
+
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Transaction History'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Transaction History',
-              style: TextStyle(fontSize: 20),
-            ),
-            // TODO: To fetch the transaction history and display here
-          ],
-        ),
+      body: FutureBuilder<List<Transaction>?>(
+        future: getTransactions(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
+            return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return Text(snapshot.data![index].amount.toString());
+                  // TODO: make beautiful, display date/time of transaction too
+                });
+          } else {
+            return Text("Loading");
+          }
+        },
       ),
     );
   }
