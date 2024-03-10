@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/issues_with_cycle.dart';
 
-void main() {
-  runApp(RideOver());
-}
 
 class RideOver extends StatelessWidget {
   @override

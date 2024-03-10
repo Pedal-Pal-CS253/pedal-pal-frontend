@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/describe_issue.dart';
 
 
-void main() {
-  runApp(MyApp());
-}
+
 
 class MyApp extends StatelessWidget {
   @override
