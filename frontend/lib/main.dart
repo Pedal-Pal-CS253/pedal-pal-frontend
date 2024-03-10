@@ -225,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideScreen(user: user)));
+                      MaterialPageRoute(builder: (context) => RideScreen()));
                       print(user);
                 },
                 child: Text('Ride Screen')),
