@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
 class IssueReportingScreen extends StatefulWidget {
   final List<bool> issues;
 
-  const IssueReportingScreen({Key? key, required this.issues}) : super(key: key);
+  const IssueReportingScreen({Key? key, required this.issues})
+      : super(key: key);
 
   @override
   _IssueReportingScreenState createState() => _IssueReportingScreenState();
@@ -31,16 +32,16 @@ class IssueReportingScreen extends StatefulWidget {
 class _IssueReportingScreenState extends State<IssueReportingScreen> {
   final TextEditingController _textFieldController = TextEditingController();
 
-  Future<http.Response> _submitIssue(List<bool> issues, String description) async {
+  Future<http.Response> _submitIssue(
+      List<bool> issues, String description) async {
     var uri = Uri(
-      scheme: 'http',
-      host: '10.0.0.2',
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
       path: 'maintenance/feedbacks/add/',
-      port: 8000,
     );
 
-    FlutterSecureStorage storage = FlutterSecureStorage() ;
-    var token = await storage.read(key: 'auth_token') ;
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    var token = await storage.read(key: 'auth_token');
 
     var body = jsonEncode({
       'air_issues': issues[0],
@@ -53,16 +54,18 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
     LoadingIndicatorDialog().show(context);
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json" , "Authorization": "Token $token"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token"
+      },
       body: body,
     );
     LoadingIndicatorDialog().dismiss();
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ((FeedbackSubmitted()))),
-                );
+        context,
+        MaterialPageRoute(builder: (context) => FeedbackSubmitted()),
+      );
     } else {
       AlertPopup().show(context, text: response.body);
     }
@@ -123,8 +126,8 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                _submitIssue(widget.issues ,_textFieldController.text) ;
-              } ,
+                _submitIssue(widget.issues, _textFieldController.text);
+              },
               child: Text(
                 'Submit',
                 style: TextStyle(
