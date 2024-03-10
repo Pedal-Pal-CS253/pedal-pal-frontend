@@ -123,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  /// Handle incoming links - the ones that the app will receive from the OS
-  /// while already started.
+  // Handle incoming links - the ones that the app will receive from the OS
+  // while already started.
   void _incomingLinkHandler() {
     if (true) {
       // It will handle app links while the app is already started - be it in
@@ -233,8 +233,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IssueReportingScreen(issues: [false,false,false,false]))
+                  );
                 },
                 child: Text('Ride Screen')),
 
@@ -243,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => IssueReportingScreen()));
+                          builder: (context) => IssueReportingScreen(issues: [false,false,false,false],)));
                 },
                 child: Text('Describe Issue')),
 
