@@ -307,7 +307,6 @@ class AccountCreatedPage extends StatelessWidget {
   }
 }
 
-
 class LoginPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -414,68 +413,70 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-void sendLoginRequest(BuildContext context, String email, String password) async {
-  var uri = Uri(
-    scheme: 'https',
-    host: 'pedal-pal-backend.vercel.app',
-    path: 'auth/login/',
-  );
 
-  var body = jsonEncode({
-    'email': email,
-    'password': password,
-  });
-
-  LoadingIndicatorDialog().show(context);
-  var response = await http.post(
-    uri,
-    headers: {"Content-Type": "application/json"},
-    body: body,
-  );
-  LoadingIndicatorDialog().dismiss();
-  
-  if (response.statusCode == 200) {
-    var userData = jsonDecode(response.body)['user'];
-    var user = User.fromJson(userData);
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('user', jsonEncode(user.toJson()));
-
-    var tokenUri = Uri(
+  void sendLoginRequest(
+      BuildContext context, String email, String password) async {
+    var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
-      path: 'auth/get_auth_token/',
+      path: 'auth/login/',
     );
 
-    var tokenBody = jsonEncode({
+    var body = jsonEncode({
       'email': email,
       'password': password,
     });
 
     LoadingIndicatorDialog().show(context);
-    var tokenResponse = await http.post(
-      tokenUri,
+    var response = await http.post(
+      uri,
       headers: {"Content-Type": "application/json"},
-      body: tokenBody,
+      body: body,
     );
     LoadingIndicatorDialog().dismiss();
 
-    if (tokenResponse.statusCode == 200) {
-      var token = jsonDecode(tokenResponse.body)['token'];
-      final storage = FlutterSecureStorage();
-      await storage.write(key: "auth_token", value: token);
-      print(token);
-      AlertPopup().show(context, text: token);
+    if (response.statusCode == 200) {
+      var userData = jsonDecode(response.body)['user'];
+      print('userData = $userData');
+      var user = User.fromJson(userData);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('user', jsonEncode(user.toJson()));
+
+      var tokenUri = Uri(
+        scheme: 'https',
+        host: 'pedal-pal-backend.vercel.app',
+        path: 'auth/get_auth_token/',
+      );
+
+      var tokenBody = jsonEncode({
+        'email': email,
+        'password': password,
+      });
+
+      LoadingIndicatorDialog().show(context);
+      var tokenResponse = await http.post(
+        tokenUri,
+        headers: {"Content-Type": "application/json"},
+        body: tokenBody,
+      );
+      LoadingIndicatorDialog().dismiss();
+
+      if (tokenResponse.statusCode == 200) {
+        var token = jsonDecode(tokenResponse.body)['token'];
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "auth_token", value: token);
+        print(token);
+        AlertPopup().show(context, text: token);
+      } else {
+        print(tokenResponse.body);
+        AlertPopup().show(context, text: tokenResponse.body);
+      }
     } else {
-      print(tokenResponse.body);
-      AlertPopup().show(context, text: tokenResponse.body);
+      AlertPopup().show(context, text: response.body);
     }
-  } else {
-    AlertPopup().show(context, text: response.body);
   }
 }
-}
-
 
 class ForgotPasswordPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
@@ -659,7 +660,7 @@ class PasswordResetPage extends StatelessWidget {
                           // you can add your statements here
                           Fluttertoast.showToast(
                               msg:
-                              "Passwords do not match! Please re-type again.",
+                                  "Passwords do not match! Please re-type again.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
                               textColor: Colors.redAccent,

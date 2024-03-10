@@ -1,8 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/models/profile.dart';
-
 
 void main() {
   runApp(MyApp());
@@ -17,16 +18,18 @@ class MyApp extends StatelessWidget {
         // Set background color as desired
         scaffoldBackgroundColor: Colors.grey[200],
       ),
-      home: RideScreen(user: user),
+      home: RideScreen(),
     );
   }
-}class RideScreen extends StatefulWidget {
+}
+
+class RideScreen extends StatefulWidget {
   @override
   _RideScreenState createState() => _RideScreenState();
 }
 
 class _RideScreenState extends State<RideScreen> {
-  late User user;
+  var user = User("loading", "loading", "loading", "loading", false);
 
   @override
   void initState() {
@@ -39,19 +42,10 @@ class _RideScreenState extends State<RideScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userData = prefs.getString('user');
     if (userData != null) {
+      print(userData);
       setState(() {
         user = User.fromJson(jsonDecode(userData));
       });
-    }
-  }
-
-  // Set the user's subscription status here
-
-  String _getPaymentMode() {
-    if (user.isSubscribed) {
-      return 'Wallet';
-    } else {
-      return 'UPI';
     }
   }
 
@@ -72,14 +66,13 @@ class _RideScreenState extends State<RideScreen> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage(
-                      'assets/profile_picture.jpg'), // Put your image path here
+                  // backgroundImage: AssetImage(
+                  //     'assets/profile_picture.jpg'), // Put your image path here
                 ),
                 SizedBox(height: 10),
                 Text(
-                  user != null ? '${user.firstName} ${user.lastName}' : '',
-                  style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                  '${user.firstName} ${user.lastName}',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -111,8 +104,7 @@ class _RideScreenState extends State<RideScreen> {
               children: [
                 Text(
                   'Start Hub',
-                  style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Library',
@@ -127,13 +119,12 @@ class _RideScreenState extends State<RideScreen> {
               children: [
                 Text(
                   'Payment Mode',
-                  style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 InkWell(
                   // onTap: _toggleSubscription,
                   child: Text(
-                    _getPaymentMode(),
+                    user.isSubscribed ? 'Wallet' : 'UPI',
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
@@ -167,5 +158,3 @@ class _RideScreenState extends State<RideScreen> {
     );
   }
 }
-
-
