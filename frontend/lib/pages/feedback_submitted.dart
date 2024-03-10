@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(FeedbackSubmitted());
-}
+
 
 class FeedbackSubmitted extends StatelessWidget {
   @override

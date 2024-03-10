@@ -5,9 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/pages/alerts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-void main() {
-  runApp(MyApp());
-}
+
 
 class MyApp extends StatelessWidget {
   @override
