@@ -1,5 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:frontend/pages/alerts.dart';
+import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:http/http.dart' as http;
+import 'package:frontend/pages/reg_login_forgot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/models/profile.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -12,28 +18,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class User {
-  String name;
-  String email;
-  String phone;
-  String subscriptionStatus;
-  bool isEligible;
-
-  User({
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.subscriptionStatus,
-    required this.isEligible,
-  });
-}
-
 // Custom text controller to prevent cursor from moving to the front
 class CustomTextEditingController extends TextEditingController {
   CustomTextEditingController({String text = ''}) : super(text: text);
 
   @override
-  TextSelection get selection => TextSelection.fromPosition(TextPosition(offset: this.text.length));
+  TextSelection get selection =>
+      TextSelection.fromPosition(TextPosition(offset: this.text.length));
 }
 
 class SettingPage extends StatefulWidget {
@@ -42,7 +33,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  late User user;
+  var user = User("loading", "loading", "loading", "loading", false);
   late CustomTextEditingController _nameController;
   late CustomTextEditingController _emailController;
   late CustomTextEditingController _phoneController;
@@ -51,17 +42,18 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-    user = User(
-      name: 'Debraj',
-      email: 'debraj2003jsr@gmail.com',
-      phone: '9470961409',
-      subscriptionStatus: 'Inactive',
-      isEligible: true, // Set the eligibility status here
-    );
-    _nameController = CustomTextEditingController(text: user.name);
-    _emailController = CustomTextEditingController(text: user.email);
-    _phoneController = CustomTextEditingController(text: user.phone);
-    _subscriptionController = CustomTextEditingController(text: user.subscriptionStatus);
+    _getUserInfo();
+  }
+
+_getUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userData = prefs.getString('user');
+    if (userData != null) {
+      print(userData);
+      setState(() {
+        user = User.fromJson(jsonDecode(userData));
+      });
+    }
   }
 
   @override
@@ -147,7 +139,15 @@ class _SettingPageState extends State<SettingPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    sendRegistrationRequest(
+                      context,
+                      user.email,
+                      user.phone,
+                      user.firstName,
+                      user.lastName
+                    );
+                  },
                   icon: Icon(Icons.edit, color: Colors.white),
                   label: Text(
                     'Edit Profile',
@@ -158,7 +158,8 @@ class _SettingPageState extends State<SettingPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
                   ),
                 ),
               ),
@@ -194,7 +195,17 @@ class _SettingPageState extends State<SettingPage> {
                 controller: _nameController,
                 onChanged: (value) {
                   setState(() {
-                    user.name = value;
+                    // Splitting the full name into first name and last name
+                    var nameParts = value.split(' ');
+                    if (nameParts.length >= 2) {
+                      // Updating user's first name and last name separately
+                      user.firstName = nameParts[0];
+                      user.lastName = nameParts.sublist(1).join(' '); // Joining remaining parts as last name
+                    } else {
+                      // If only one name is entered, consider it as first name
+                      user.firstName = value;
+                      user.lastName = ''; // Resetting last name
+                    }
                   });
                 },
               ),
@@ -300,15 +311,10 @@ class _SettingPageState extends State<SettingPage> {
                   border: InputBorder.none,
                 ),
                 controller: _subscriptionController,
-                onChanged: (value) {
-                  setState(() {
-                    user.subscriptionStatus = value;
-                  });
-                },
               ),
             ),
             SizedBox(height: 24.0),
-            if (user.isEligible)
+            if (user.isSubscribed == false)
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -317,9 +323,11 @@ class _SettingPageState extends State<SettingPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1a2758),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0), // Increased border radius
+                        borderRadius: BorderRadius.circular(
+                            20.0), // Increased border radius
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 32.0),
                     ),
                     child: Text(
                       'Start a 7 day trial',
@@ -333,5 +341,40 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
+  }
+
+  Future<http.Response> sendRegistrationRequest(
+      BuildContext context, String email, String phone, String firstName, String lastName) async {
+    // TODO: change host
+    var uri = Uri(
+      scheme: 'http',
+      host: '10.0.2.2',
+      path: 'auth/register/',
+      port: 8000,
+    );
+
+    var body = jsonEncode({
+      'email': email,
+      'phone': phone,
+      'first_name': firstName,
+      'last_name': lastName
+    });
+
+    LoadingIndicatorDialog().show(context);
+    // TODO: add OTP validation
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 200) {
+      Navigator.pushNamed(
+          context, '/login'); // TODO: go to account created page
+    } else {
+      AlertPopup().show(context, text: response.body);
+    }
+
+    return response;
   }
 }
