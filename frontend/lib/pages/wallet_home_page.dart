@@ -272,7 +272,7 @@ class TransactionHistoryScreen extends State<THS> {
     Iterable transactions = json.decode(response.body);
 
     for (var transaction in transactions) {
-      var temp = Transaction(transaction['status'].toString(), num.parse(transaction['amount'].toString()).toInt());
+      var temp = Transaction(transaction['status'].toString(), num.parse(transaction['amount'].toString()).toInt(), DateTime.parse(transaction['time']));
       data.add(temp);
     }
 
@@ -285,19 +285,55 @@ class TransactionHistoryScreen extends State<THS> {
       appBar: AppBar(
         title: Text('Transaction History'),
       ),
-      body: FutureBuilder<List<Transaction>?>(
+      body: FutureBuilder<List<Transaction>>(
         future: getTransactions(),
         builder: (context, snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return Text(snapshot.data![index].amount.toString());
-                  // TODO: make beautiful, display date/time of transaction too
-                });
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var transaction = snapshot.data![index];
+                Color backgroundColor = transaction.type == "CREDIT" ? Colors.green : Colors.red;
+                return Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    leading: CircleAvatar(
+                      backgroundColor: backgroundColor,
+                      child: Icon(
+                        Icons.monetization_on,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      'Amount: ${transaction.amount.toString()}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Date: ${transaction.date.year}/${transaction.date.month}/${transaction.date.day}   Time: ${transaction.date.hour}:${transaction.date.minute}',
+                    ),
+                  ),
+                );
+              },
+            );
           } else {
-            return Text("Loading");
+            return Center(
+              child: Text('No transactions found.'),
+            );
           }
         },
       ),
