@@ -16,12 +16,17 @@ class User {
       : email = json['email'] as String,
         firstName = json['first_name'] as String,
         lastName = json['last_name'] as String,
-        phone = json['phone'] as String;
+        phone = json['phone'] as String,
+        isSubscribed = json['is_subscribed'] as bool,
+        isActive = json['is_active'] as bool,
+        isStaff = json['is_staff'] as bool,
+        isRideActive = json['ride_active'] as bool,
+        balance = json['balance'] as int;
 
   Map<String, dynamic> toJson() => {
         'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
+        'first_name': firstName,
+        'last_name': lastName,
         'phone': phone,
         'is_subscribed': isSubscribed,
         'is_active': isActive,

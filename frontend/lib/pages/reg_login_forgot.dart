@@ -8,7 +8,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/models/profile.dart';
 
-
 class RegistrationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -412,7 +411,8 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void sendLoginRequest(BuildContext context, String email, String password) async {
+  void sendLoginRequest(
+      BuildContext context, String email, String password) async {
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -656,7 +656,7 @@ class PasswordResetPage extends StatelessWidget {
                           // you can add your statements here
                           Fluttertoast.showToast(
                               msg:
-                              "Passwords do not match! Please re-type again.",
+                                  "Passwords do not match! Please re-type again.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
                               textColor: Colors.redAccent,
