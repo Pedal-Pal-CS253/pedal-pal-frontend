@@ -10,7 +10,7 @@ import 'pages/feedback_submitted.dart';
 import 'pages/issues_with_cycle.dart';
 import 'pages/ride_over.dart';
 import 'dart:async';
-
+import 'package:frontend/pages/qr_scanner.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
@@ -180,6 +180,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
                 onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QRViewExample(),
+                  ));
+                },
+                child: const Text('qrView'),
+            ),
+            ElevatedButton(
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RegistrationPage()),
@@ -225,8 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideScreen(user: user)));
-                      print(user);
+                      MaterialPageRoute(builder: (context) => RideScreen()));
                 },
                 child: Text('Ride Screen')),
 

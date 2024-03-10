@@ -5,11 +5,9 @@ import 'package:frontend/pages/alerts.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/pages/active_ride.dart';
+import 'package:frontend/models/profile.dart';
 
-User user = User('','','','',false);
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -307,7 +305,6 @@ class AccountCreatedPage extends StatelessWidget {
   }
 }
 
-
 class LoginPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -415,8 +412,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void sendLoginRequest(BuildContext context, String email,
-      String password) async {
+  void sendLoginRequest(BuildContext context, String email, String password) async {
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -435,7 +431,14 @@ class LoginPage extends StatelessWidget {
       body: body,
     );
     LoadingIndicatorDialog().dismiss();
+
     if (response.statusCode == 200) {
+      var userData = jsonDecode(response.body)['user'];
+      var user = User.fromJson(userData);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('user', jsonEncode(user.toJson()));
+
       var tokenUri = Uri(
         scheme: 'https',
         host: 'pedal-pal-backend.vercel.app',
@@ -455,60 +458,21 @@ class LoginPage extends StatelessWidget {
       );
       LoadingIndicatorDialog().dismiss();
 
-      var token = jsonDecode(tokenResponse.body)['token'];
       if (tokenResponse.statusCode == 200) {
+        var token = jsonDecode(tokenResponse.body)['token'];
         final storage = FlutterSecureStorage();
         await storage.write(key: "auth_token", value: token);
         print(token);
-
-        var userDataResponse = await http.get(
-          uri,
-          headers: {"Authorization": "Bearer $token"},
-        );
-        print(userDataResponse);
-        print(userDataResponse.statusCode);
-
-        if (userDataResponse.statusCode == 200) {
-          var userDataJson = jsonDecode(userDataResponse.body);
-          user = User.fromJson(userDataJson);
-
-          print(user.firstName);
-
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('user_email', user.email);
-          prefs.setString('user_first_name', user.firstName);
-          prefs.setString('user_last_name', user.lastName);
-          prefs.setString('user_phone', user.phone);
-          prefs.setBool('user_is_subscribed', user.isSubscribed);
-          prefs.setBool('user_is_active', user.isActive);
-          prefs.setBool('user_is_staff', user.isStaff);
-          prefs.setBool('user_is_ride_active', user.isRideActive);
-          prefs.setInt('user_balance', user.balance);
-
-          //print(prefs.getString('user_first_name'));
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RideScreen(user: user),
-            ),
-          );
-        }
+        AlertPopup().show(context, text: token);
+      } else {
+        print(tokenResponse.body);
+        AlertPopup().show(context, text: tokenResponse.body);
       }
-
-      AlertPopup().show(context, text: token);
+    } else {
+      AlertPopup().show(context, text: response.body);
     }
-    // else {
-    //    // Define tokenResponse here
-    //   print(tokenResponse.body);
-    //   AlertPopup().show(context, text: tokenResponse.body);
-    // }
   }
-  // else {
-  // AlertPopup().show(context, text: response.body);
-  // }
 }
-
-
 
 class ForgotPasswordPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();

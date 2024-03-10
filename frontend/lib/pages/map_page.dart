@@ -1,3 +1,6 @@
+import 'dart:core';
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
@@ -47,11 +50,13 @@ class _MapPageState extends State<MapPage> {
   bool _showInfoContainer = false;
   late LatLng _markerPosition;
   late int _CycleNum;
+  Set<Marker> markers = {};
 
   @override
   void initState() {
     super.initState();
     _PlaceOfMarker = '';
+    _generateMarkers();
   }
 
   void InfoForMarker(String markerId, LatLng markerPosition, int cycles) {
@@ -88,23 +93,25 @@ class _MapPageState extends State<MapPage> {
   }
 
 
-  Set<Marker> _generateMarkers(int n) {
-    print("WE NOW GENERATE MARKERS:");
-    get_hubs();
-    Set<Marker> markers = {};
-    populateCoordinates(Coordinates);
-    for (int i = 1; i <= hubIdList.length; i++) {
-      markers.add(
-        Marker(
-          markerId: MarkerId(hubNameList[i-1]),
-          position: Coordinates[i-1],
-          onTap: () {
-            InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1]);
-          },
-        ),
-      );
-    }
-    return markers;
+  void _generateMarkers() {
+    print("GENERATING MARKERS");
+    get_hubs().whenComplete(() {
+      populateCoordinates(Coordinates);
+      for (int i = 1; i <= hubIdList.length; i++) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(hubNameList[i-1]),
+            position: Coordinates[i-1],
+            onTap: () {
+              InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1]);
+            },
+          ),
+        );
+      }
+      setState(() {
+
+      });
+    });
   }
 
   @override
@@ -145,7 +152,7 @@ class _MapPageState extends State<MapPage> {
                         target: LatLng(26.5113, 80.2329),
                         zoom: 13,
                       ),
-                      markers: _generateMarkers(5), // If there are 5 hubs
+                      markers: markers, // If there are 5 hubs
                     ),
                   ),
                 ],
@@ -317,6 +324,7 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             ),
+
         ],
       ),
 
