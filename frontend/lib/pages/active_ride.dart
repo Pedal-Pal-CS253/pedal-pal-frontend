@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/models/profile.dart';
@@ -17,39 +18,35 @@ class MyApp extends StatelessWidget {
         // Set background color as desired
         scaffoldBackgroundColor: Colors.grey[200],
       ),
-      home: RideScreen(user: user),
+      home: RideScreen(),
     );
   }
 }
 
 class RideScreen extends StatefulWidget {
-  final User user;
-
-  RideScreen({required this.user});
   @override
   _RideScreenState createState() => _RideScreenState();
 }
 
 class _RideScreenState extends State<RideScreen> {
-  late User user;
-  String _paymentMode = '';
-
-  get prefs => SharedPreferences.getInstance();
+  var user = User("loading", "loading", "loading", "loading", false);
 
   @override
-  Future<void> initState() async{
+  void initState() {
     super.initState();
-    _getPaymentMode();
+    // Retrieve the user information from shared_preferences
+    _getUserInfo();
   }
 
-  Future<void> _getPaymentMode() async {
+  _getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isSubscribed = user.isSubscribed ?? false;
-    String user_first = prefs.getString('user_first_name')!;
-    print(user_first);
-    setState(() {
-      _paymentMode = isSubscribed ? 'Wallet' : 'UPI';
-    });
+    var userData = prefs.getString('user');
+    if (userData != null) {
+      print(userData);
+      setState(() {
+        user = User.fromJson(jsonDecode(userData));
+      });
+    }
   }
 
   @override
@@ -64,25 +61,23 @@ class _RideScreenState extends State<RideScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // User Profile
             Column(
               children: [
                 CircleAvatar(
                   radius: 50,
-                  // backgroundImage: AssetImage('assets/profile_picture.jpg'),
-                  backgroundColor: Colors.cyan,
+                  // backgroundImage: AssetImage(
+                  //     'assets/profile_picture.jpg'), // Put your image path here
                 ),
                 SizedBox(height: 10),
                 Text(
-                  user.firstName + user.lastName,
-                  // 'Rag',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  '${user.firstName} ${user.lastName}',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             SizedBox(height: 20),
+            // Ride Status Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -92,8 +87,7 @@ class _RideScreenState extends State<RideScreen> {
                 child: Text(
                   'Ride Status',
                   style: TextStyle(
-                    color: const Color.fromARGB(255, 248, 246, 246),
-                  ),
+                      color: const Color.fromARGB(255, 248, 246, 246)),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -103,16 +97,14 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 40), // Increased vertical space
+            // Start Hub
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'Start Hub',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Library',
@@ -120,24 +112,27 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 40), // Increased vertical space
+            // Payment Mode
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'Payment Mode',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  _paymentMode,
-                  style: TextStyle(color: Colors.blue),
+                InkWell(
+                  // onTap: _toggleSubscription,
+                  child: Text(
+                    user.isSubscribed ? 'Wallet' : 'UPI',
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             ),
+            // Ride Status Button
             SizedBox(height: 20),
+            // End Ride Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -147,8 +142,7 @@ class _RideScreenState extends State<RideScreen> {
                 child: Text(
                   'End Ride',
                   style: TextStyle(
-                    color: const Color.fromARGB(255, 248, 246, 246),
-                  ),
+                      color: const Color.fromARGB(255, 248, 246, 246)),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,

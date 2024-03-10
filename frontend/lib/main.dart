@@ -225,8 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideScreen(user: user)));
-                      print(user);
+                      MaterialPageRoute(builder: (context) => RideScreen()));
                 },
                 child: Text('Ride Screen')),
 
@@ -235,7 +234,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => IssueReportingScreen(issues: [false,false,false,false],)));
+                          builder: (context) => IssueReportingScreen(
+                                issues: [false, false, false, false],
+                              )));
                 },
                 child: Text('Describe Issue')),
 
