@@ -95,7 +95,7 @@ class _MapPageState extends State<MapPage> {
 
   void _generateMarkers() {
     print("GENERATING MARKERS");
-    get_hubs().whenComplete(() {
+    getHubs().whenComplete(() {
       populateCoordinates(Coordinates);
       for (int i = 1; i <= hubIdList.length; i++) {
         markers.add(
