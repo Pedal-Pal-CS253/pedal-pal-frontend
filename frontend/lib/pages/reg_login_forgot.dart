@@ -5,11 +5,8 @@ import 'package:frontend/pages/alerts.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/pages/active_ride.dart';
-
-//User user = User('','','','',false);
+import 'package:frontend/models/profile.dart';
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -437,7 +434,6 @@ class LoginPage extends StatelessWidget {
 
     if (response.statusCode == 200) {
       var userData = jsonDecode(response.body)['user'];
-      print('userData = $userData');
       var user = User.fromJson(userData);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();

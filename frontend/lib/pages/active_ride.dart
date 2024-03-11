@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/reg_login_forgot.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/models/profile.dart';
-
-void main() {
-  runApp(MyApp());
-}
+import 'package:shared_preferences/shared_preferences.dart';
+import 'reg_login_forgot.dart';
+import 'dart:convert';
+// void main() {
+//   runApp(MyApp());
+// }
 
 class MyApp extends StatelessWidget {
   @override
@@ -47,6 +47,7 @@ class _RideScreenState extends State<RideScreen> {
         user = User.fromJson(jsonDecode(userData));
       });
     }
+
   }
 
   @override
@@ -66,6 +67,7 @@ class _RideScreenState extends State<RideScreen> {
               children: [
                 CircleAvatar(
                   radius: 50,
+
                   // backgroundImage: AssetImage(
                   //     'assets/profile_picture.jpg'), // Put your image path here
                 ),

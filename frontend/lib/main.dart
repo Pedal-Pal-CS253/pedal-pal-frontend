@@ -10,7 +10,7 @@ import 'pages/feedback_submitted.dart';
 import 'pages/issues_with_cycle.dart';
 import 'pages/ride_over.dart';
 import 'dart:async';
-
+import 'package:frontend/pages/qr_scanner.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
@@ -177,6 +177,14 @@ class _MyHomePageState extends State<MyHomePage> {
             Image.asset(
               'assets/pedal_pal_logo.png', // Adjust the path to your image
               width: 260, // Adjust the width as needed
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QRViewExample(),
+                  ));
+                },
+                child: const Text('qrView'),
             ),
             ElevatedButton(
                 onPressed: () {
