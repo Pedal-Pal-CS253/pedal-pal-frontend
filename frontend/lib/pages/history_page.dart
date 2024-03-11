@@ -141,7 +141,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
               ),
               SizedBox(height: 16.0),
-              Row(
+              Column(
                 children: historyDataList.map((data) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -182,7 +182,7 @@ class HistoryPane extends StatelessWidget {
   Widget build(BuildContext context) {
     // Calculate the width of HistoryPane based on screen width
     final screenWidth = MediaQuery.of(context).size.width;
-    final paneWidth = screenWidth * 0.8; // Adjust the percentage as needed
+    final paneWidth = screenWidth * 0.9; // Adjust the percentage as needed
 
     return Container(
       width: paneWidth,
@@ -229,7 +229,7 @@ class HistoryPane extends StatelessWidget {
 
   Widget _buildTimeInfo(String label, DateTime time) {
     return Text(
-      '$label: ${time.hour}:${time.minute}',
+      '$label: ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
       style: TextStyle(color: Color(0xFF8B97AC)),
     );
   }
