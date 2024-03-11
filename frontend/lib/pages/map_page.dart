@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
@@ -9,7 +10,6 @@ import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/models/hubs.dart';
-
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -67,22 +67,6 @@ class _MapPageState extends State<MapPage> {
       _showInfoContainer = true;
     });
   }
-  // List<String> HUBS = [
-  //   'RM',
-  //   'Hall 6',
-  //   'Library',
-  //   'LH 20',
-  //   'Hall 5'
-  // ];
-  // List<int> CycleNum = [1,2,3,4,5];
-  // List<LatLng> Coordinates = [
-  //   LatLng(26.514316, 80.234816),
-  //   LatLng(26.505147, 80.234617),
-  //   LatLng(26.512331, 80.233678),
-  //   LatLng(26.510890, 80.234255),
-  //   LatLng(26.509612, 80.228636),
-  // ];
-
 
   List<LatLng> Coordinates = [];
 
@@ -92,25 +76,25 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-
   void _generateMarkers() {
-    print("GENERATING MARKERS");
     getHubs().whenComplete(() {
       populateCoordinates(Coordinates);
       for (int i = 1; i <= hubIdList.length; i++) {
         markers.add(
           Marker(
-            markerId: MarkerId(hubNameList[i-1]),
-            position: Coordinates[i-1],
+            markerId: MarkerId(hubNameList[i - 1]),
+            position: Coordinates[i - 1],
             onTap: () {
-              InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1]);
+              InfoForMarker(
+                hubNameList[i - 1],
+                Coordinates[i - 1],
+                availableList[i - 1],
+              );
             },
           ),
         );
       }
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -199,8 +183,8 @@ class _MapPageState extends State<MapPage> {
                                 child: Container(
                                   height: 30,
                                   // Height adjusted to be a tenth of the container's height
-                                  child: Center(
-                                      child: Text('CYCLES AVAILABLE')),
+                                  child:
+                                      Center(child: Text('CYCLES AVAILABLE')),
                                 ),
                               ),
                             ],
@@ -226,10 +210,14 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: Container(
                                   height: 50,
-                                  child: Center(child: Text('Advanced Booking',
-                                    style: TextStyle(fontSize: 23,
-                                      fontWeight: FontWeight.bold,),)
-                                  ),
+                                  child: Center(
+                                      child: Text(
+                                    'Advanced Booking',
+                                    style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
                                 ),
                               ),
                             ],
@@ -246,8 +234,7 @@ class _MapPageState extends State<MapPage> {
                                         child: Text('Select Date'),
                                       ),
                                       Text(
-                                        '${selectedDate?.year}-${selectedDate
-                                            ?.month}-${selectedDate?.day}',
+                                        '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -266,8 +253,7 @@ class _MapPageState extends State<MapPage> {
                                       ),
                                       SizedBox(height: 20),
                                       Text(
-                                        '${selectedTime?.hour}:${selectedTime
-                                            ?.minute}',
+                                        '${selectedTime?.hour}:${selectedTime?.minute}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -324,7 +310,6 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             ),
-
         ],
       ),
 
@@ -375,7 +360,8 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WalletHomePage()),
+                        MaterialPageRoute(
+                            builder: (context) => WalletHomePage()),
                       );
                     },
                   ),
@@ -384,7 +370,8 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => (HistoryPage())),
+                        MaterialPageRoute(
+                            builder: (context) => (HistoryPage())),
                       );
                     },
                   ),
@@ -393,14 +380,16 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => (BookingPage())),
+                        MaterialPageRoute(
+                            builder: (context) => (BookingPage())),
                       );
                     },
                   ),
                   ListTile(
                     title: Text('Log Out'),
                     onTap: () {
-                      // Log out action
+                      FlutterSecureStorage storage = FlutterSecureStorage();
+                      storage.delete(key: 'auth_token');
                     },
                   ),
                 ],
@@ -412,4 +401,3 @@ class _MapPageState extends State<MapPage> {
     );
   }
 }
-
