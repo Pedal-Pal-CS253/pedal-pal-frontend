@@ -1,8 +1,7 @@
 import 'dart:core';
 import 'dart:core';
-
+import 'package:frontend/pages/qr_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
@@ -10,15 +9,19 @@ import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/models/hubs.dart';
+import 'package:frontend/models/advance_book.dart';
+import 'dart:developer' as developer;
 
-class MapPage extends StatefulWidget {
-  const MapPage({Key? key}) : super(key: key);
+late int activeHubId;
+
+class Dashboard extends StatefulWidget {
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<Dashboard> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<Dashboard> {
   DateTime? selectedDate = DateTime.now();
   TimeOfDay? selectedTime = TimeOfDay.now();
 
@@ -59,14 +62,36 @@ class _MapPageState extends State<MapPage> {
     _generateMarkers();
   }
 
-  void InfoForMarker(String markerId, LatLng markerPosition, int cycles) {
+  void debugger(){
+    developer.log("YEH LO");
+  }
+
+  void InfoForMarker(String markerId, LatLng markerPosition, int cycles, int hubId) {
+    debugger();
     setState(() {
       _PlaceOfMarker = markerId;
       _CycleNum = cycles;
       _markerPosition = markerPosition;
+      activeHubId = hubId;
       _showInfoContainer = true;
     });
   }
+  // List<String> HUBS = [
+  //   'RM',
+  //   'Hall 6',
+  //   'Library',
+  //   'LH 20',
+  //   'Hall 5'
+  // ];
+  // List<int> CycleNum = [1,2,3,4,5];
+  // List<LatLng> Coordinates = [
+  //   LatLng(26.514316, 80.234816),
+  //   LatLng(26.505147, 80.234617),
+  //   LatLng(26.512331, 80.233678),
+  //   LatLng(26.510890, 80.234255),
+  //   LatLng(26.509612, 80.228636),
+  // ];
+
 
   List<LatLng> Coordinates = [];
 
@@ -76,25 +101,25 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+
   void _generateMarkers() {
-    getHubs().whenComplete(() {
+    print("GENERATING MARKERS");
+    get_hubs().whenComplete(() {
       populateCoordinates(Coordinates);
       for (int i = 1; i <= hubIdList.length; i++) {
         markers.add(
           Marker(
-            markerId: MarkerId(hubNameList[i - 1]),
-            position: Coordinates[i - 1],
+            markerId: MarkerId(hubNameList[i-1]),
+            position: Coordinates[i-1],
             onTap: () {
-              InfoForMarker(
-                hubNameList[i - 1],
-                Coordinates[i - 1],
-                availableList[i - 1],
-              );
+              InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1], hubIdList[i-1]);
             },
           ),
         );
       }
-      setState(() {});
+      setState(() {
+
+      });
     });
   }
 
@@ -103,7 +128,7 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Hello, Raghav!',
+          'Hello, !',
           textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 24,
@@ -136,7 +161,7 @@ class _MapPageState extends State<MapPage> {
                         target: LatLng(26.5113, 80.2329),
                         zoom: 13,
                       ),
-                      markers: markers, // If there are 5 hubs
+                      markers: markers,
                     ),
                   ),
                 ],
@@ -183,8 +208,8 @@ class _MapPageState extends State<MapPage> {
                                 child: Container(
                                   height: 30,
                                   // Height adjusted to be a tenth of the container's height
-                                  child:
-                                      Center(child: Text('CYCLES AVAILABLE')),
+                                  child: Center(
+                                      child: Text('CYCLES AVAILABLE')),
                                 ),
                               ),
                             ],
@@ -210,14 +235,10 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: Container(
                                   height: 50,
-                                  child: Center(
-                                      child: Text(
-                                    'Advanced Booking',
-                                    style: TextStyle(
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
+                                  child: Center(child: Text('Advanced Booking',
+                                    style: TextStyle(fontSize: 23,
+                                      fontWeight: FontWeight.bold,),)
+                                  ),
                                 ),
                               ),
                             ],
@@ -234,7 +255,8 @@ class _MapPageState extends State<MapPage> {
                                         child: Text('Select Date'),
                                       ),
                                       Text(
-                                        '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
+                                        '${selectedDate?.year}-${selectedDate
+                                            ?.month}-${selectedDate?.day}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -253,7 +275,8 @@ class _MapPageState extends State<MapPage> {
                                       ),
                                       SizedBox(height: 20),
                                       Text(
-                                        '${selectedTime?.hour}:${selectedTime?.minute}',
+                                        '${selectedTime?.hour}:${selectedTime
+                                            ?.minute}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -267,7 +290,9 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Functionality to execute when the button is pressed
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const QRViewExample(),
+                                    ));
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors
@@ -286,12 +311,16 @@ class _MapPageState extends State<MapPage> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Functionality to execute when the button is pressed
+                                    bookForLater(selectedDate, selectedTime);
+                                    setState(() {
+                                      _showInfoContainer = false;
+                                    });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors
-                                        .blue, // Change the background color as per your requirement
+                                        .blue,
                                   ),
+
                                   child: Text(
                                     'Book Now',
                                     style: TextStyle(
@@ -310,6 +339,7 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             ),
+
         ],
       ),
 
@@ -360,8 +390,7 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => WalletHomePage()),
+                        MaterialPageRoute(builder: (context) => WalletHomePage()),
                       );
                     },
                   ),
@@ -370,8 +399,7 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => (HistoryPage())),
+                        MaterialPageRoute(builder: (context) => (HistoryPage())),
                       );
                     },
                   ),
@@ -380,16 +408,16 @@ class _MapPageState extends State<MapPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => (BookingPage())),
+                        MaterialPageRoute(builder: (context) => (BookingPage())),
                       );
                     },
                   ),
                   ListTile(
                     title: Text('Log Out'),
                     onTap: () {
-                      FlutterSecureStorage storage = FlutterSecureStorage();
-                      storage.delete(key: 'auth_token');
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      // Log out action
                     },
                   ),
                 ],
@@ -401,3 +429,4 @@ class _MapPageState extends State<MapPage> {
     );
   }
 }
+

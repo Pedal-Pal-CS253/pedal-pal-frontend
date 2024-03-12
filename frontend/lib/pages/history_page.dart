@@ -1,11 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,6 +23,7 @@ class _HistoryPageState extends State<HistoryPage> {
   List<HistoryData> historyDataList = [];
 
   Future<void> historyRequest() async {
+    // TODO: change host
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -46,26 +44,17 @@ class _HistoryPageState extends State<HistoryPage> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         var resBody = jsonDecode(response.body) as List<dynamic>;
-
+        print(resBody);
         // Update the state variable with the fetched data
         historyDataList = resBody.map((data) {
-          // Convert start time and end time strings to DateTime objects
-          DateTime startTime = DateTime.parse(data['start_time']);
-          DateTime endTime = DateTime.parse(data['end_time']);
-
-          // Calculate duration as the difference between end time and start time
-          Duration difference = endTime.difference(startTime);
-
-          // Format the duration as hours and minutes
-          String formattedDuration =
-              '${difference.inHours}h ${difference.inMinutes.remainder(60)}m';
-
           return HistoryData(
             startLocation: (data['start_hub']).toString(),
-            startTime: startTime,
+            startTime: data['start_time'],
+            startDate: "Start Date",
             endLocation: 'End Location',
-            endTime: endTime,
-            duration: formattedDuration,
+            endTime: data['start_time'],
+            endDate: 'End Date',
+            duration: '1h 2m',
           );
         }).toList();
 
@@ -113,6 +102,12 @@ class _HistoryPageState extends State<HistoryPage> {
               SizedBox(height: 0.0),
               Row(
                 children: [
+                  // IconButton(
+                  //   icon: Icon(Icons.arrow_back),
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
                   SizedBox(width: 16.0),
                   Text(
                     'History',
@@ -128,35 +123,44 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total Time Used: $formattedTotalTimeUsed',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Column(
-                children: historyDataList.map((data) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: HistoryPane(
-                      startLocation: data.startLocation,
-                      startTime: data.startTime,
-                      endLocation: data.endLocation,
-                      endTime: data.endTime,
-                      duration: data.duration,
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total Time Used: $formattedTotalTimeUsed',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }).toList(),
+                  ),
+                  SizedBox(height: 16.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: historyDataList.map((data) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: HistoryPane(
+                          startLocation: data.startLocation,
+                          startTime: data.startTime,
+                          startDate: data.startDate,
+                          endLocation: data.endLocation,
+                          endTime: data.endTime,
+                          endDate: data.endDate,
+                          duration: data.duration,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -165,46 +169,104 @@ class _HistoryPageState extends State<HistoryPage> {
 
 class HistoryPane extends StatelessWidget {
   final String startLocation;
-  final DateTime startTime;
-  final DateTime endTime;
+  final String startTime;
+  final String startDate;
   final String endLocation;
+  final String endTime;
+  final String endDate;
   final String duration;
 
   HistoryPane({
     required this.startLocation,
     required this.startTime,
+    required this.startDate,
     required this.endLocation,
     required this.endTime,
+    required this.endDate,
     required this.duration,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the width of HistoryPane based on screen width
-    final screenWidth = MediaQuery.of(context).size.width;
-    final paneWidth = screenWidth * 0.9; // Adjust the percentage as needed
-
     return Container(
-      width: paneWidth,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Color(0xFFC1E2F1),
       ),
       padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildLocationCircle(startLocation),
-          SizedBox(height: 8),
-          _buildTimeInfo('Start', startTime),
-          SizedBox(height: 8),
-          _buildTimeInfo('End', endTime),
-          SizedBox(height: 8),
-          _buildLocationCircle(endLocation),
-          SizedBox(height: 8),
-          Text(
-            duration,
-            style: TextStyle(fontSize: 18.0),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildLocationCircle(startLocation),
+                SizedBox(height: 8),
+                Text(
+                  startLocation,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  startDate,
+                  style: TextStyle(color: Color(0xFF8B97AC)),
+                ),
+                Text(
+                  startTime,
+                  style: TextStyle(color: Color(0xFF8B97AC)),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  duration,
+                  style: TextStyle(fontSize: 18.0),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  endDate,
+                  style: TextStyle(color: Color(0xFF8B97AC)),
+                ),
+                Text(
+                  endTime,
+                  style: TextStyle(color: Color(0xFF8B97AC)),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildLocationCircle(endLocation),
+                SizedBox(height: 8),
+                Text(
+                  endLocation,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -219,34 +281,26 @@ class HistoryPane extends StatelessWidget {
         shape: BoxShape.circle,
         color: Color(0xFF8EC1DC),
       ),
-      alignment: Alignment.center,
-      child: Text(
-        location,
-        style: TextStyle(color: Colors.black),
-      ),
-    );
-  }
-
-  Widget _buildTimeInfo(String label, DateTime time) {
-    return Text(
-      '$label: ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-      style: TextStyle(color: Color(0xFF8B97AC)),
     );
   }
 }
 
 class HistoryData {
   final String startLocation;
-  final DateTime startTime;
-  final DateTime endTime;
+  final String startTime;
+  final String startDate;
   final String endLocation;
+  final String endTime;
+  final String endDate;
   final String duration;
 
   HistoryData({
     required this.startLocation,
     required this.startTime,
+    required this.startDate,
     required this.endLocation,
     required this.endTime,
+    required this.endDate,
     required this.duration,
   });
 }
