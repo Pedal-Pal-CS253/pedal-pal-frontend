@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:frontend/pages/active_ride.dart';
 import 'package:http/http.dart' as http;
 
 import 'alerts.dart';
@@ -37,6 +38,28 @@ class _QRViewExampleState extends State<QRViewExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 0.0),
+              Row(
+                children: [
+                  SizedBox(width: 16.0),
+                  Text(
+                    'Scan the QR on the cycle',
+                    style: TextStyle(color: Colors.black, fontSize: 24.0),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
@@ -199,6 +222,8 @@ class _QRViewExampleState extends State<QRViewExample> {
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
       // TODO: go to ride active page
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => RideScreen()));
       AlertPopup().show(context, text: "Successful!");
     } else {
       AlertPopup().show(context, text: response.body);

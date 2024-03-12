@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/models/profile.dart';
+import 'package:frontend/pages/map_page.dart';
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -411,8 +412,9 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void sendLoginRequest(
-      BuildContext context, String email, String password) async {
+  static var token;
+
+  void sendLoginRequest( BuildContext context, String email, String password) async {
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -459,11 +461,16 @@ class LoginPage extends StatelessWidget {
       LoadingIndicatorDialog().dismiss();
 
       if (tokenResponse.statusCode == 200) {
-        var token = jsonDecode(tokenResponse.body)['token'];
+        token = jsonDecode(tokenResponse.body)['token'];
         final storage = FlutterSecureStorage();
         await storage.write(key: "auth_token", value: token);
         print(token);
         AlertPopup().show(context, text: token);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => (Dashboard())),
+        );
+
       } else {
         print(tokenResponse.body);
         AlertPopup().show(context, text: tokenResponse.body);
