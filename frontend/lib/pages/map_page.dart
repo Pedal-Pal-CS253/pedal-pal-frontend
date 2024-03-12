@@ -1,16 +1,14 @@
 import 'dart:core';
-import 'dart:core';
-import 'package:frontend/pages/qr_scanner.dart';
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:frontend/pages/wallet_home_page.dart';
-import 'package:frontend/pages/reg_login_forgot.dart';
-import 'package:frontend/pages/history_page.dart';
-import 'package:frontend/pages/booking_page.dart';
-import 'package:frontend/main.dart';
-import 'package:frontend/models/hubs.dart';
-import 'package:frontend/models/advance_book.dart';
 import 'dart:developer' as developer;
+
+import 'package:flutter/material.dart';
+import 'package:frontend/models/advance_book.dart';
+import 'package:frontend/models/hubs.dart';
+import 'package:frontend/pages/booking_page.dart';
+import 'package:frontend/pages/history_page.dart';
+import 'package:frontend/pages/qr_scanner.dart';
+import 'package:frontend/pages/wallet_home_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 late int activeHubId;
 
@@ -49,51 +47,34 @@ class _MapPageState extends State<Dashboard> {
       });
   }
 
-  late String _PlaceOfMarker;
-  bool _showInfoContainer = false;
-  late LatLng _markerPosition;
-  late int _CycleNum;
+  late String placeOfMarker;
+  bool showInfoContainer = false;
+  late int cycleNumber;
   Set<Marker> markers = {};
 
   @override
   void initState() {
     super.initState();
-    _PlaceOfMarker = '';
+    placeOfMarker = '';
     _generateMarkers();
   }
 
-  void debugger(){
+  void debugger() {
     developer.log("YEH LO");
   }
 
-  void InfoForMarker(String markerId, LatLng markerPosition, int cycles, int hubId) {
+  void infoForMarker(
+      String markerId, LatLng markerPosition, int cycles, int hubId) {
     debugger();
     setState(() {
-      _PlaceOfMarker = markerId;
-      _CycleNum = cycles;
-      _markerPosition = markerPosition;
+      placeOfMarker = markerId;
+      cycleNumber = cycles;
       activeHubId = hubId;
-      _showInfoContainer = true;
+      showInfoContainer = true;
     });
   }
-  // List<String> HUBS = [
-  //   'RM',
-  //   'Hall 6',
-  //   'Library',
-  //   'LH 20',
-  //   'Hall 5'
-  // ];
-  // List<int> CycleNum = [1,2,3,4,5];
-  // List<LatLng> Coordinates = [
-  //   LatLng(26.514316, 80.234816),
-  //   LatLng(26.505147, 80.234617),
-  //   LatLng(26.512331, 80.233678),
-  //   LatLng(26.510890, 80.234255),
-  //   LatLng(26.509612, 80.228636),
-  // ];
 
-
-  List<LatLng> Coordinates = [];
+  List<LatLng> coordinates = [];
 
   void populateCoordinates(List<LatLng> coordinates) {
     for (int i = 0; i < latitudeList.length; i++) {
@@ -101,25 +82,23 @@ class _MapPageState extends State<Dashboard> {
     }
   }
 
-
   void _generateMarkers() {
     print("GENERATING MARKERS");
-    get_hubs().whenComplete(() {
-      populateCoordinates(Coordinates);
+    getHubs().whenComplete(() {
+      populateCoordinates(coordinates);
       for (int i = 1; i <= hubIdList.length; i++) {
         markers.add(
           Marker(
-            markerId: MarkerId(hubNameList[i-1]),
-            position: Coordinates[i-1],
+            markerId: MarkerId(hubNameList[i - 1]),
+            position: coordinates[i - 1],
             onTap: () {
-              InfoForMarker(hubNameList[i-1], Coordinates[i-1], availableList[i-1], hubIdList[i-1]);
+              infoForMarker(hubNameList[i - 1], coordinates[i - 1],
+                  availableList[i - 1], hubIdList[i - 1]);
             },
           ),
         );
       }
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -168,12 +147,12 @@ class _MapPageState extends State<Dashboard> {
               ),
             ),
           ),
-          if (_showInfoContainer)
+          if (showInfoContainer)
             Positioned.fill(
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _showInfoContainer = false;
+                    showInfoContainer = false;
                   });
                 },
                 child: Container(
@@ -208,37 +187,41 @@ class _MapPageState extends State<Dashboard> {
                                 child: Container(
                                   height: 30,
                                   // Height adjusted to be a tenth of the container's height
+                                  child:
+                                      Center(child: Text('CYCLES AVAILABLE')),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(child: Text(placeOfMarker)),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(child: Text('$cycleNumber')),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
                                   child: Center(
-                                      child: Text('CYCLES AVAILABLE')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text(_PlaceOfMarker)),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('$_CycleNum')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('Advanced Booking',
-                                    style: TextStyle(fontSize: 23,
-                                      fontWeight: FontWeight.bold,),)
-                                  ),
+                                      child: Text(
+                                    'Advanced Booking',
+                                    style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
                                 ),
                               ),
                             ],
@@ -255,8 +238,7 @@ class _MapPageState extends State<Dashboard> {
                                         child: Text('Select Date'),
                                       ),
                                       Text(
-                                        '${selectedDate?.year}-${selectedDate
-                                            ?.month}-${selectedDate?.day}',
+                                        '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -275,8 +257,7 @@ class _MapPageState extends State<Dashboard> {
                                       ),
                                       SizedBox(height: 20),
                                       Text(
-                                        '${selectedTime?.hour}:${selectedTime
-                                            ?.minute}',
+                                        '${selectedTime?.hour}:${selectedTime?.minute}',
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ],
@@ -290,8 +271,10 @@ class _MapPageState extends State<Dashboard> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const QRViewExample(),
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const QRViewExample(),
                                     ));
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -313,14 +296,12 @@ class _MapPageState extends State<Dashboard> {
                                   onPressed: () {
                                     bookForLater(selectedDate, selectedTime);
                                     setState(() {
-                                      _showInfoContainer = false;
+                                      showInfoContainer = false;
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .blue,
+                                    backgroundColor: Colors.blue,
                                   ),
-
                                   child: Text(
                                     'Book Now',
                                     style: TextStyle(
@@ -339,7 +320,6 @@ class _MapPageState extends State<Dashboard> {
                 ),
               ),
             ),
-
         ],
       ),
 
@@ -390,7 +370,8 @@ class _MapPageState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WalletHomePage()),
+                        MaterialPageRoute(
+                            builder: (context) => WalletHomePage()),
                       );
                     },
                   ),
@@ -399,7 +380,8 @@ class _MapPageState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => (HistoryPage())),
+                        MaterialPageRoute(
+                            builder: (context) => (HistoryPage())),
                       );
                     },
                   ),
@@ -408,7 +390,8 @@ class _MapPageState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => (BookingPage())),
+                        MaterialPageRoute(
+                            builder: (context) => (BookingPage())),
                       );
                     },
                   ),
@@ -429,4 +412,3 @@ class _MapPageState extends State<Dashboard> {
     );
   }
 }
-

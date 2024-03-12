@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,8 @@ class CustomTextEditingController extends TextEditingController {
   CustomTextEditingController({String text = ''}) : super(text: text);
 
   @override
-  TextSelection get selection => TextSelection.fromPosition(TextPosition(offset: this.text.length));
+  TextSelection get selection =>
+      TextSelection.fromPosition(TextPosition(offset: this.text.length));
 }
 
 class SettingPage extends StatefulWidget {
@@ -61,7 +60,8 @@ class _SettingPageState extends State<SettingPage> {
     _nameController = CustomTextEditingController(text: user.name);
     _emailController = CustomTextEditingController(text: user.email);
     _phoneController = CustomTextEditingController(text: user.phone);
-    _subscriptionController = CustomTextEditingController(text: user.subscriptionStatus);
+    _subscriptionController =
+        CustomTextEditingController(text: user.subscriptionStatus);
   }
 
   @override
@@ -158,7 +158,8 @@ class _SettingPageState extends State<SettingPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
                   ),
                 ),
               ),
@@ -317,9 +318,11 @@ class _SettingPageState extends State<SettingPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1a2758),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0), // Increased border radius
+                        borderRadius: BorderRadius.circular(
+                            20.0), // Increased border radius
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 32.0),
                     ),
                     child: Text(
                       'Start a 7 day trial',
