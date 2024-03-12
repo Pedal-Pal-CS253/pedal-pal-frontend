@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:developer' as developer;
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'package:frontend/pages/map_page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/pages/reg_login_forgot.dart';
 
-Future<void> bookForLater( DateTime? selectedDate, TimeOfDay? selectedTime) async {
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/pages/map_page.dart';
+import 'package:http/http.dart' as http;
+
+Future<void> bookForLater(
+    DateTime? selectedDate, TimeOfDay? selectedTime) async {
   // TODO: change host
   var uri = Uri(
     scheme: 'https',
@@ -33,14 +31,14 @@ Future<void> bookForLater( DateTime? selectedDate, TimeOfDay? selectedTime) asyn
     // TODO: response code is 400, check attributes
     var tokenBody = jsonEncode({
       'hub': activeHubId,
-      'start_time': "${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}T${selectedTime?.hour}:${selectedTime?.minute}:00",
+      'start_time':
+          "${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}T${selectedTime?.hour}:${selectedTime?.minute}:00",
       'cycle': "1",
     });
 
     if (response.statusCode == 200) {
       var resBody = jsonDecode(response.body) as List<dynamic>;
       print(resBody);
-
     } else {
       print('Request failed with status: ${response.statusCode}');
       print('Response body: ${response.body}');

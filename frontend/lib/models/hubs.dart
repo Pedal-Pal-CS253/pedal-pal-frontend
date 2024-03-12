@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:developer' as developer;
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/pages/alerts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 List<int> hubIdList = [];
@@ -31,7 +29,5 @@ Future<void> getHubs() async {
       longitudeList.add(item['longitude']);
       availableList.add(item['available']);
     }
-  } else {
-
-  }
+  } else {}
 }

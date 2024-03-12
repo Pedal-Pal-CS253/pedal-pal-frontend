@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/describe_issue.dart';
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,7 +54,10 @@ class _IssuesWithCycleState extends State<IssuesWithCycle> {
           children: [
             Text(
               'Issues with Cycle',
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 6, 11)),
+              style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 0, 6, 11)),
             ),
             SizedBox(height: 10),
             Text(
@@ -68,10 +69,22 @@ class _IssuesWithCycleState extends State<IssuesWithCycle> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IssueItem(title: 'Tires low on air', isSelected: selectedIssues[0] == true, onTap: () => toggleIssueSelection(0)),
-                IssueItem(title: 'Sounds while riding', isSelected: selectedIssues[1] == true, onTap: () => toggleIssueSelection(1)),
-                IssueItem(title: 'Malfunctioning brakes', isSelected: selectedIssues[2] == true, onTap: () => toggleIssueSelection(2)),
-                IssueItem(title: 'Chain fallen off', isSelected: selectedIssues[3] == true, onTap: () => toggleIssueSelection(3)),
+                IssueItem(
+                    title: 'Tires low on air',
+                    isSelected: selectedIssues[0] == true,
+                    onTap: () => toggleIssueSelection(0)),
+                IssueItem(
+                    title: 'Sounds while riding',
+                    isSelected: selectedIssues[1] == true,
+                    onTap: () => toggleIssueSelection(1)),
+                IssueItem(
+                    title: 'Malfunctioning brakes',
+                    isSelected: selectedIssues[2] == true,
+                    onTap: () => toggleIssueSelection(2)),
+                IssueItem(
+                    title: 'Chain fallen off',
+                    isSelected: selectedIssues[3] == true,
+                    onTap: () => toggleIssueSelection(3)),
               ],
             ),
             SizedBox(height: 20),
@@ -81,7 +94,9 @@ class _IssuesWithCycleState extends State<IssuesWithCycle> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => IssueReportingScreen(issues: selectedIssues)),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            IssueReportingScreen(issues: selectedIssues)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -91,7 +106,8 @@ class _IssuesWithCycleState extends State<IssuesWithCycle> {
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color.fromARGB(255, 16, 138, 237),
                 ),
-                child: Text('Continue', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                child: Text('Continue',
+                    style: TextStyle(fontSize: 16, color: Colors.black54)),
               ),
             ),
           ],
@@ -116,63 +132,67 @@ class IssueItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const IssueItem({Key? key, required this.title, required this.isSelected, required this.onTap}) : super(key: key);
+  const IssueItem(
+      {Key? key,
+      required this.title,
+      required this.isSelected,
+      required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
-        ),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(title),
+        onTap: onTap,
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.blue : Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
           ),
-          GestureDetector(
-            child: Container(
-              width: 24,
-              height: 35,
-              margin: EdgeInsets.only(left: 10),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? Colors.blue : Colors.grey,
-                  width: 2,
-                ),
-                color: isSelected ? Colors.blue : Colors.transparent,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(title),
               ),
-              child: isSelected
-                  ? Icon(Icons.check, size: 20, color: Colors.white)
-                  : null,
-            ),
+              GestureDetector(
+                child: Container(
+                  width: 24,
+                  height: 35,
+                  margin: EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isSelected ? Colors.blue : Colors.grey,
+                      width: 2,
+                    ),
+                    color: isSelected ? Colors.blue : Colors.transparent,
+                  ),
+                  child: isSelected
+                      ? Icon(Icons.check, size: 20, color: Colors.white)
+                      : null,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      )
-      //   padding: EdgeInsets.symmetric(horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       Expanded(
-      //         child: Text(
-      //           title,
-      //           style: TextStyle(color: isSelected ? Colors.white : Colors.black),
-      //         ),
-      //       ),
-      //       isSelected
-      //           ? Icon(Icons.check, color: Colors.white)
-      //           : SizedBox(), // Empty SizedBox to maintain the layout
-      //     ],
-      //   ),
-      // ),
-    );
+        )
+        //   padding: EdgeInsets.symmetric(horizontal: 10),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Expanded(
+        //         child: Text(
+        //           title,
+        //           style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+        //         ),
+        //       ),
+        //       isSelected
+        //           ? Icon(Icons.check, color: Colors.white)
+        //           : SizedBox(), // Empty SizedBox to maintain the layout
+        //     ],
+        //   ),
+        // ),
+        );
   }
 }
-

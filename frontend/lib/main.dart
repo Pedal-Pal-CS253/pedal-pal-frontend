@@ -1,18 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/pages/wallet_home_page.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/pages/qr_scanner.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
-import 'pages/map_page.dart';
+import 'package:uni_links/uni_links.dart';
+
 import 'pages/active_ride.dart';
 import 'pages/describe_issue.dart';
 import 'pages/feedback_submitted.dart';
 import 'pages/issues_with_cycle.dart';
+import 'pages/map_page.dart';
 import 'pages/ride_over.dart';
-import 'dart:async';
-import 'package:frontend/pages/qr_scanner.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
 
 bool _initialURILinkHandled = false;
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: "PedalPal"),
-        '/DashBoard': (context) => MapPage(),
+        '/DashBoard': (context) => Dashboard(),
         // '/history': (context) =>
         '/registration': (context) => RegistrationApp(),
         '/otp_verification': (context) => OTPVerificationPage(),
@@ -179,12 +180,12 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 260, // Adjust the width as needed
             ),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QRViewExample(),
-                  ));
-                },
-                child: const Text('qrView'),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const QRViewExample(),
+                ));
+              },
+              child: const Text('qrView'),
             ),
             ElevatedButton(
                 onPressed: () {
@@ -225,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MapPage()),
+                    MaterialPageRoute(builder: (context) => Dashboard()),
                   );
                 },
                 child: Text('Dashboard')),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/issues_with_cycle.dart';
 
-
 class RideOver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,8 @@ class RideOver extends StatelessWidget {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Make children take the entire width
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // Make children take the entire width
               children: [
                 Expanded(
                   flex: 3,
@@ -56,11 +56,15 @@ class RideOver extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => IssuesWithCycle()),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => IssuesWithCycle()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 14, 130, 224),
+                          backgroundColor:
+                              const Color.fromARGB(255, 14, 130, 224),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -77,7 +81,8 @@ class RideOver extends StatelessWidget {
                           // Add your Home button functionality here
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 14, 130, 224),
+                          backgroundColor:
+                              const Color.fromARGB(255, 14, 130, 224),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),

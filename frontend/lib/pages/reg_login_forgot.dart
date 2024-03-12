@@ -1,13 +1,14 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/pages/alerts.dart';
-import 'package:pin_input_text_field/pin_input_text_field.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/models/profile.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:frontend/pages/map_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationApp extends StatelessWidget {
   @override
@@ -414,7 +415,8 @@ class LoginPage extends StatelessWidget {
 
   static var token;
 
-  void sendLoginRequest( BuildContext context, String email, String password) async {
+  void sendLoginRequest(
+      BuildContext context, String email, String password) async {
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -470,7 +472,6 @@ class LoginPage extends StatelessWidget {
           context,
           MaterialPageRoute(builder: (context) => (Dashboard())),
         );
-
       } else {
         print(tokenResponse.body);
         AlertPopup().show(context, text: tokenResponse.body);

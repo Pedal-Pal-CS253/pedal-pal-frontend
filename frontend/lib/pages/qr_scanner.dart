@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:frontend/pages/active_ride.dart';
 import 'package:http/http.dart' as http;
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'alerts.dart';
 
@@ -73,7 +74,6 @@ class _QRViewExampleState extends State<QRViewExample> {
                   if (result != null)
                     Text(
                         'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-
                   else
                     const Text('Scan a code'),
                   Row(
@@ -153,7 +153,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
-        MediaQuery.of(context).size.height < 400)
+            MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
@@ -222,14 +222,13 @@ class _QRViewExampleState extends State<QRViewExample> {
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
       // TODO: go to ride active page
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => RideScreen()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => RideScreen()));
       AlertPopup().show(context, text: "Successful!");
     } else {
       AlertPopup().show(context, text: response.body);
     }
   }
-
 
   @override
   void dispose() {

@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/pages/alerts.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../models/payment.dart';
 
@@ -97,8 +96,7 @@ class WalletBalanceScreen extends State<WBS> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => THS()),
+                MaterialPageRoute(builder: (context) => THS()),
               );
             },
             child: Text('View Transaction History'),
@@ -122,7 +120,7 @@ class AddBalanceScreen extends State<ABS> {
   void initState() {
     super.initState();
 
-    razorpay = new Razorpay();
+    razorpay = Razorpay();
 
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
@@ -272,7 +270,10 @@ class TransactionHistoryScreen extends State<THS> {
     Iterable transactions = json.decode(response.body);
 
     for (var transaction in transactions) {
-      var temp = Transaction(transaction['status'].toString(), num.parse(transaction['amount'].toString()).toInt());
+      var temp = Transaction(
+          transaction['status'].toString(),
+          num.parse(transaction['amount'].toString()).toInt(),
+          DateTime.parse(transaction['time']));
       data.add(temp);
     }
 
@@ -285,19 +286,57 @@ class TransactionHistoryScreen extends State<THS> {
       appBar: AppBar(
         title: Text('Transaction History'),
       ),
-      body: FutureBuilder<List<Transaction>?>(
+      body: FutureBuilder<List<Transaction>>(
         future: getTransactions(),
         builder: (context, snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return Text(snapshot.data![index].amount.toString());
-                  // TODO: make beautiful, display date/time of transaction too
-                });
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var transaction = snapshot.data![index];
+                Color backgroundColor =
+                    transaction.type == "CREDIT" ? Colors.green : Colors.red;
+                return Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    leading: CircleAvatar(
+                      backgroundColor: backgroundColor,
+                      child: Icon(
+                        Icons.monetization_on,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      'Amount: ${transaction.amount.toString()}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Date: ${transaction.date.day.toString().padLeft(2, '0')}/${transaction.date.month.toString().padLeft(2, '0')}/${transaction.date.year}   Time: ${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
+                    ),
+                  ),
+                );
+              },
+            );
           } else {
-            return Text("Loading");
+            return Center(
+              child: Text('No transactions found!'),
+            );
           }
         },
       ),

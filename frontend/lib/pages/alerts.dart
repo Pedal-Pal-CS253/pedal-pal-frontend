@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AlertPopup {
   static final AlertPopup _singleton = AlertPopup._internal();

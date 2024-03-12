@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,10 +15,12 @@ class MyApp extends StatelessWidget {
 
 class MembershipSubscriptionPage extends StatefulWidget {
   @override
-  _MembershipSubscriptionPageState createState() => _MembershipSubscriptionPageState();
+  _MembershipSubscriptionPageState createState() =>
+      _MembershipSubscriptionPageState();
 }
 
-class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage> {
+class _MembershipSubscriptionPageState
+    extends State<MembershipSubscriptionPage> {
   int selectedPlan = -1;
 
   @override
@@ -88,8 +88,11 @@ class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage>
               // Action for starting the trial
             },
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.black, backgroundColor: Colors.blue.withOpacity(0.3), // Black text color
-              padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0), // Increased width
+              foregroundColor: Colors.black,
+              backgroundColor: Colors.blue.withOpacity(0.3),
+              // Black text color
+              padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
+              // Increased width
               textStyle: TextStyle(fontSize: 18.0),
             ),
             child: Text('Start a 7 day trial'),
@@ -100,7 +103,8 @@ class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage>
     );
   }
 
-  Widget _buildMembershipPlan(String price, String duration, String tag, int index, Color color) {
+  Widget _buildMembershipPlan(
+      String price, String duration, String tag, int index, Color color) {
     bool isSelected = selectedPlan == index;
 
     return GestureDetector(
@@ -114,9 +118,13 @@ class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage>
         padding: EdgeInsets.all(20.0),
         margin: EdgeInsets.symmetric(horizontal: 20.0),
         decoration: BoxDecoration(
-          border: Border.all(color: isSelected ? Colors.blue : Colors.grey), // Change border color if selected
-          borderRadius: BorderRadius.circular(15.0), // Curved corners
-          color: isSelected ? Colors.blue.withOpacity(0.3) : Colors.white, // Change background color if selected
+          border: Border.all(color: isSelected ? Colors.blue : Colors.grey),
+          // Change border color if selected
+          borderRadius: BorderRadius.circular(15.0),
+          // Curved corners
+          color: isSelected
+              ? Colors.blue.withOpacity(0.3)
+              : Colors.white, // Change background color if selected
         ),
         child: Row(
           children: [
@@ -126,8 +134,12 @@ class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage>
               margin: EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: isSelected ? Colors.white : Colors.grey), // Change tick color if selected
-                color: isSelected ? Colors.blue : Colors.white, // Change tick background color if selected
+                border:
+                    Border.all(color: isSelected ? Colors.white : Colors.grey),
+                // Change tick color if selected
+                color: isSelected
+                    ? Colors.blue
+                    : Colors.white, // Change tick background color if selected
               ),
               child: isSelected
                   ? Icon(
@@ -160,7 +172,8 @@ class _MembershipSubscriptionPageState extends State<MembershipSubscriptionPage>
                   SizedBox(height: 5.0),
                   if (tag.isNotEmpty && isSelected)
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(10.0),

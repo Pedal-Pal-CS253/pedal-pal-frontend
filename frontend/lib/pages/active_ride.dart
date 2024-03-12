@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'reg_login_forgot.dart';
-import 'dart:convert';
+
 // void main() {
 //   runApp(MyApp());
 // }
@@ -47,7 +46,6 @@ class _RideScreenState extends State<RideScreen> {
         user = User.fromJson(jsonDecode(userData));
       });
     }
-
   }
 
   @override

@@ -108,7 +108,8 @@ class BookingPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 20.0), // Adding space between current and previous bookings
+            SizedBox(height: 20.0),
+            // Adding space between current and previous bookings
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
