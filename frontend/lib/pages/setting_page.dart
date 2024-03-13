@@ -32,7 +32,7 @@ class CustomTextEditingController extends TextEditingController {
 
   @override
   TextSelection get selection =>
-      TextSelection.fromPosition(TextPosition(offset: this.text.length));
+      TextSelection.fromPosition(TextPosition(offset: text.length));
 }
 
 class SettingPage extends StatefulWidget {

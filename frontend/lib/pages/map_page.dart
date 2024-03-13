@@ -1,12 +1,13 @@
 import 'dart:core';
-import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/models/advance_book.dart';
 import 'package:frontend/models/hubs.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/qr_scanner.dart';
+import 'package:frontend/pages/setting_page.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -59,13 +60,8 @@ class _MapPageState extends State<Dashboard> {
     _generateMarkers();
   }
 
-  void debugger() {
-    developer.log("YEH LO");
-  }
-
   void infoForMarker(
       String markerId, LatLng markerPosition, int cycles, int hubId) {
-    debugger();
     setState(() {
       placeOfMarker = markerId;
       cycleNumber = cycles;
@@ -83,7 +79,6 @@ class _MapPageState extends State<Dashboard> {
   }
 
   void _generateMarkers() {
-    print("GENERATING MARKERS");
     getHubs().whenComplete(() {
       populateCoordinates(coordinates);
       for (int i = 1; i <= hubIdList.length; i++) {
@@ -329,7 +324,7 @@ class _MapPageState extends State<Dashboard> {
           child: Column(
             children: [
               SizedBox(
-                height: 300,
+                height: 200,
                 child: DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.blue,
@@ -339,7 +334,7 @@ class _MapPageState extends State<Dashboard> {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: AssetImage('assets/your_image.png'),
+                        backgroundImage: AssetImage('assets/profile_photo.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
@@ -347,14 +342,6 @@ class _MapPageState extends State<Dashboard> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'View Profile',
-                        style: TextStyle(
-                          fontSize: 10,
                           color: Colors.white,
                         ),
                       ),
@@ -396,11 +383,17 @@ class _MapPageState extends State<Dashboard> {
                     },
                   ),
                   ListTile(
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage()));
+                    },
+                  ),
+                  ListTile(
                     title: Text('Log Out'),
                     onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      // Log out action
+                      FlutterSecureStorage storage = FlutterSecureStorage();
+                      storage.delete(key: 'auth_token');
+                      Navigator.pushReplacementNamed(context, '/');
                     },
                   ),
                 ],
