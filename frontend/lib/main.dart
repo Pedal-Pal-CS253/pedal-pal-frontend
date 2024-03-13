@@ -16,9 +16,9 @@ Future<void> main() async {
   await dotenv.load();
 
   FlutterSecureStorage storage = FlutterSecureStorage();
-  var token = await storage.read(key: 'auth_token');
+  var loggedIn = await storage.containsKey(key: 'auth_token');
 
-  if (token == null) {
+  if (!loggedIn) {
     runApp(MaterialApp(
       home: MyApp(),
     ));
