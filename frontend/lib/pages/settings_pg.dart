@@ -111,6 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
+                // TODO: do payment
                 setState(() {
                   trialStarted = true;
                 });

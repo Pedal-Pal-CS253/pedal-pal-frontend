@@ -149,7 +149,6 @@ class RegistrationPage extends StatelessWidget {
 
   void sendRegistrationRequest(BuildContext context, String email,
       String password, String phone, String name) async {
-    // TODO: change host
     var uri = Uri(
       scheme: 'https',
       host: 'pedal-pal-backend.vercel.app',
@@ -177,7 +176,7 @@ class RegistrationPage extends StatelessWidget {
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
       Navigator.pushNamed(
-          context, '/login'); // TODO: go to account created page
+          context, '/login');
     } else {
       AlertPopup().show(context, text: response.body);
     }
@@ -435,6 +434,7 @@ class LoginPage extends StatelessWidget {
       body: body,
     );
     LoadingIndicatorDialog().dismiss();
+    print(response.body);
 
     if (response.statusCode == 200) {
       var userData = jsonDecode(response.body)['user'];

@@ -23,9 +23,11 @@ Future<void> main() async {
       home: MyApp(),
     ));
   } else {
-    runApp(MaterialApp(
-      home: Dashboard(),
-    ));
+    runApp(
+      MaterialApp(
+        home: Dashboard(),
+      ),
+    );
   }
 }
 
