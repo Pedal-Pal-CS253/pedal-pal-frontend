@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/profile.dart';
+import 'package:frontend/pages/qr_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
-
+// TODO: load start_time from shared preferences and display current time etc.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -137,7 +135,11 @@ class _RideScreenState extends State<RideScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Functionality to end ride goes here
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const QRViewExample(mode: 'end'),
+                    ),
+                  );
                 },
                 child: Text(
                   'End Ride',

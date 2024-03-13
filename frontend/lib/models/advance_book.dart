@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 Future<void> bookForLater(
     DateTime? selectedDate, TimeOfDay? selectedTime) async {
-  // TODO: change host
   var uri = Uri(
     scheme: 'https',
     host: 'pedal-pal-backend.vercel.app',
@@ -23,7 +22,7 @@ Future<void> bookForLater(
       'start_time':
       "${selectedDate?.year}-${selectedDate?.month.toString().padLeft(2, '0')}-${selectedDate?.day.toString().padLeft(2, '0')}T${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}:00",
     });
-    
+
     var response = await http.post(
       uri,
       headers: {

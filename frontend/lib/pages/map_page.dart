@@ -269,7 +269,7 @@ class _MapPageState extends State<Dashboard> {
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
                                       builder: (context) =>
-                                          const QRViewExample(),
+                                          const QRViewExample(mode: "book"),
                                     ));
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -385,7 +385,10 @@ class _MapPageState extends State<Dashboard> {
                   ListTile(
                     title: Text('Settings'),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingPage()));
                     },
                   ),
                   ListTile(

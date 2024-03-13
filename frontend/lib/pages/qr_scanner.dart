@@ -6,24 +6,30 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/pages/active_ride.dart';
+import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/profile.dart';
 import 'alerts.dart';
 
-void main() => runApp(const MaterialApp(home: QRViewExample()));
-
 class QRViewExample extends StatefulWidget {
-  const QRViewExample({Key? key}) : super(key: key);
+  final String mode;
+
+  const QRViewExample({Key? key, required this.mode}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _QRViewExampleState();
+  State<StatefulWidget> createState() => _QRViewExampleState(mode);
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
+  final String mode;
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
+  _QRViewExampleState(this.mode) : super();
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -179,7 +185,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       setState(() {
         result = scanData;
         // scanData has lock id
-        sendRideNowRequest(result?.code);
+        sendRequest(result?.code);
       });
       print(result);
     });
@@ -191,6 +197,59 @@ class _QRViewExampleState extends State<QRViewExample> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('no Permission')),
       );
+    }
+  }
+
+  void sendRequest(String? lock) async {
+    if (mode == 'book') {
+      sendRideNowRequest(lock);
+    }
+    if (mode == 'end') {
+      sendEndRideRequest(lock);
+    }
+  }
+
+  void sendEndRideRequest(lock) async {
+    // check if user is subscribed first
+    // if user is not subscribed, do payment first then come here.
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var user = User.fromJson(jsonDecode(preferences.getString('user')!));
+    if (!user.isSubscribed) {
+      // TODO: do payment and appropriate API call
+      return;
+    }
+
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'booking/end/',
+    );
+
+    var body = jsonEncode({
+      'id': lock,
+    });
+
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    var token = await storage.read(key: 'auth_token');
+
+    LoadingIndicatorDialog().show(context);
+
+    var response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+      body: body,
+    );
+
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 201) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      AlertPopup().show(context, text: "Successful!");
+    } else {
+      AlertPopup().show(context, text: response.body);
     }
   }
 
@@ -221,10 +280,10 @@ class _QRViewExampleState extends State<QRViewExample> {
 
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
-      // TODO: go to ride active page
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => RideScreen()));
       AlertPopup().show(context, text: "Successful!");
+      // TODO: store start time in SharedPreferences
     } else {
       AlertPopup().show(context, text: response.body);
     }
