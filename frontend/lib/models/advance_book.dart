@@ -11,30 +11,27 @@ Future<void> bookForLater(
   var uri = Uri(
     scheme: 'https',
     host: 'pedal-pal-backend.vercel.app',
-    path: 'booking/book/',
+    path: 'booking/book_later/',
   );
 
   FlutterSecureStorage storage = FlutterSecureStorage();
   var token = await storage.read(key: 'auth_token');
 
   try {
+    var body = jsonEncode({
+      'hub': activeHubId,
+      'start_time':
+      "${selectedDate?.year}-${selectedDate?.month.toString().padLeft(2, '0')}-${selectedDate?.day.toString().padLeft(2, '0')}T${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}:00",
+    });
+    
     var response = await http.post(
       uri,
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Token $token"
       },
+      body: body,
     );
-    print("YEH RHA RESPONSE:");
-    print(response.statusCode);
-
-    // TODO: response code is 400, check attributes
-    var tokenBody = jsonEncode({
-      'hub': activeHubId,
-      'start_time':
-          "${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}T${selectedTime?.hour}:${selectedTime?.minute}:00",
-      'cycle': "1",
-    });
 
     if (response.statusCode == 200) {
       var resBody = jsonDecode(response.body) as List<dynamic>;

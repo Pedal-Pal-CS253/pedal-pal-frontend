@@ -468,7 +468,7 @@ class LoginPage extends StatelessWidget {
         await storage.write(key: "auth_token", value: token);
         print(token);
         AlertPopup().show(context, text: token);
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => (Dashboard())),
         );

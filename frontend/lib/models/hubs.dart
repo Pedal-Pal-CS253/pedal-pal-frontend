@@ -14,6 +14,7 @@ Future<void> getHubs() async {
   String baseURL = "https://pedal-pal-backend.vercel.app/booking/view_hubs/";
   FlutterSecureStorage storage = FlutterSecureStorage();
   var token = await storage.read(key: 'auth_token');
+  print('token = $token');
 
   var response = await http.get(Uri.parse(baseURL), headers: {
     HttpHeaders.authorizationHeader: "Token $token",

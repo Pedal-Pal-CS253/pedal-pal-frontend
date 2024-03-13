@@ -3,24 +3,30 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/pages/qr_scanner.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
 import 'package:uni_links/uni_links.dart';
 
-import 'pages/active_ride.dart';
-import 'pages/describe_issue.dart';
-import 'pages/feedback_submitted.dart';
-import 'pages/issues_with_cycle.dart';
 import 'pages/map_page.dart';
-import 'pages/ride_over.dart';
 
 bool _initialURILinkHandled = false;
 
 Future<void> main() async {
   await dotenv.load();
 
-  runApp(const MyApp());
+  FlutterSecureStorage storage = FlutterSecureStorage();
+  var loggedIn = await storage.containsKey(key: 'auth_token');
+
+  if (!loggedIn) {
+    runApp(MaterialApp(
+      home: MyApp(),
+    ));
+  } else {
+    runApp(MaterialApp(
+      home: Dashboard(),
+    ));
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -36,16 +42,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: "PedalPal"),
-        '/DashBoard': (context) => Dashboard(),
-        // '/history': (context) =>
-        '/registration': (context) => RegistrationApp(),
-        '/otp_verification': (context) => OTPVerificationPage(),
-        '/account_created': (context) => AccountCreatedPage(),
+        '/register': (context) => RegistrationApp(),
         '/login': (context) => LoginPage(),
-        '/forgot_password': (context) => ForgotPasswordPage(),
-        '/password_reset': (context) => PasswordResetPage(token: ''),
-        '/password_reset_successful': (context) =>
-            PasswordResetSuccessfulPage(),
       },
     );
   }
@@ -61,10 +59,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Uri? _initialURI;
-  Uri? _currentURI;
-  Object? _err;
-
   StreamSubscription? _streamSubscription;
 
   @override
@@ -79,9 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
       final String token = uri.queryParameters['token']!;
 
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PasswordResetPage(token: token)));
+        context,
+        MaterialPageRoute(
+          builder: (context) => PasswordResetPage(token: token),
+        ),
+      );
     }
   }
 
@@ -104,9 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (!mounted) {
             return;
           }
-          setState(() {
-            _initialURI = initialURI;
-          });
+          setState(() {});
         } else {
           debugPrint("Null Initial URI received");
         }
@@ -119,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return;
         }
         debugPrint('Malformed Initial URI received');
-        setState(() => _err = err);
+        setState(() {});
       }
     }
   }
@@ -136,23 +130,13 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         debugPrint('Received URI: $uri');
         _handleDeepLink(uri);
-        setState(() {
-          _currentURI = uri;
-          _err = null;
-        });
+        setState(() {});
       }, onError: (Object err) {
         if (!mounted) {
           return;
         }
         debugPrint('Error occurred: $err');
-        setState(() {
-          _currentURI = null;
-          if (err is FormatException) {
-            _err = err;
-          } else {
-            _err = null;
-          }
-        });
+        setState(() {});
       });
     }
   }
@@ -179,100 +163,15 @@ class _MyHomePageState extends State<MyHomePage> {
               'assets/pedal_pal_logo.png', // Adjust the path to your image
               width: 260, // Adjust the width as needed
             ),
+            Text("Welcome to PedalPal!"),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const QRViewExample(),
-                ));
-              },
-              child: const Text('qrView'),
+              onPressed: () => Navigator.pushNamed(context, '/login'),
+              child: Text("Login"),
             ),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegistrationPage()),
-                  );
-                },
-                child: Text('Register')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                },
-                child: Text('Login')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PasswordResetPage(token: '')));
-                },
-                child: Text('Change Password')),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-              child: Text('Login'),
-            ),
-
-            // Button to navigate to the wallet page
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Dashboard()),
-                  );
-                },
-                child: Text('Dashboard')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideScreen()));
-                },
-                child: Text('Ride Screen')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => IssueReportingScreen(
-                                issues: [false, false, false, false],
-                              )));
-                },
-                child: Text('Describe Issue')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FeedbackSubmitted()));
-                },
-                child: Text('Feedback Submitted')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => IssuesWithCycle()));
-                },
-                child: Text('Issue with Cycle')),
-
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RideOver()));
-                },
-                child: Text('Ride Screen'))
+              onPressed: () => Navigator.pushNamed(context, '/register'),
+              child: Text("Register"),
+            )
           ],
         ),
       ),
