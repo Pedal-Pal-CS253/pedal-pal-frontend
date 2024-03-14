@@ -27,6 +27,8 @@ class RideScreen extends StatefulWidget {
 
 class _RideScreenState extends State<RideScreen> {
   var user = User("loading", "loading", "loading", "loading", false);
+  var startTime = DateTime.now();
+  var startHub = "Loading";
 
   @override
   void initState() {
@@ -35,13 +37,27 @@ class _RideScreenState extends State<RideScreen> {
     _getUserInfo();
   }
 
-  _getUserInfo() async {
+  void _getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userData = prefs.getString('user');
+    var startTimeData = prefs.getString('ride_start_time');
+    var startHubData = prefs.getString('ride_start_hub');
+    print(userData);
+    print(startTimeData);
+    print(startHubData);
     if (userData != null) {
-      print(userData);
       setState(() {
         user = User.fromJson(jsonDecode(userData));
+      });
+    }
+    if (startTimeData != null) {
+      setState(() {
+        startTime = DateTime.parse(startTimeData);
+      });
+    }
+    if (startHubData != null) {
+      setState(() {
+        startHub = startHubData;
       });
     }
   }
@@ -105,7 +121,21 @@ class _RideScreenState extends State<RideScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Library',
+                  startHub,
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+            SizedBox(height: 40), // Increased vertical space
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Ride Start Time',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  startTime.toString(),
                   style: TextStyle(color: Colors.grey),
                 ),
               ],

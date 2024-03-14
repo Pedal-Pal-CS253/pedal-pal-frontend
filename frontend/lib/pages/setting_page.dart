@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/profile.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -8,22 +10,6 @@ class MyApp extends StatelessWidget {
       home: SettingPage(),
     );
   }
-}
-
-class User {
-  String name;
-  String email;
-  String phone;
-  String subscriptionStatus;
-  bool isEligible;
-
-  User({
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.subscriptionStatus,
-    required this.isEligible,
-  });
 }
 
 // Custom text controller to prevent cursor from moving to the front
@@ -50,18 +36,12 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-    user = User(
-      name: 'Debraj',
-      email: 'debraj2003jsr@gmail.com',
-      phone: '9470961409',
-      subscriptionStatus: 'Inactive',
-      isEligible: true, // Set the eligibility status here
-    );
-    _nameController = CustomTextEditingController(text: user.name);
+    user = User('email', 'firstName', 'lastName', 'phone', true);
+    _nameController = CustomTextEditingController(text: user.firstName);
     _emailController = CustomTextEditingController(text: user.email);
     _phoneController = CustomTextEditingController(text: user.phone);
     _subscriptionController =
-        CustomTextEditingController(text: user.subscriptionStatus);
+        CustomTextEditingController(text: user.isSubscribed.toString());
   }
 
   @override
@@ -193,11 +173,7 @@ class _SettingPageState extends State<SettingPage> {
                   border: InputBorder.none,
                 ),
                 controller: _nameController,
-                onChanged: (value) {
-                  setState(() {
-                    user.name = value;
-                  });
-                },
+                onChanged: (value) {},
               ),
             ),
             SizedBox(height: 24.0),
@@ -301,15 +277,11 @@ class _SettingPageState extends State<SettingPage> {
                   border: InputBorder.none,
                 ),
                 controller: _subscriptionController,
-                onChanged: (value) {
-                  setState(() {
-                    user.subscriptionStatus = value;
-                  });
-                },
+                onChanged: (value) {},
               ),
             ),
             SizedBox(height: 24.0),
-            if (user.isEligible)
+            if (!user.isSubscribed)
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -325,7 +297,7 @@ class _SettingPageState extends State<SettingPage> {
                           vertical: 16.0, horizontal: 32.0),
                     ),
                     child: Text(
-                      'Start a 7 day trial',
+                      'Subscribe for Additional Benefits!',
                       style: TextStyle(fontSize: 20.0, color: Colors.white),
                     ),
                   ),

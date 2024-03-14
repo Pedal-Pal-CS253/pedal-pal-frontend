@@ -175,8 +175,7 @@ class RegistrationPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.pushNamed(
-          context, '/login');
+      Navigator.pushNamed(context, '/login');
     } else {
       AlertPopup().show(context, text: response.body);
     }
@@ -467,10 +466,9 @@ class LoginPage extends StatelessWidget {
         final storage = FlutterSecureStorage();
         await storage.write(key: "auth_token", value: token);
         print(token);
-        AlertPopup().show(context, text: token);
-        Navigator.pushReplacement(
-          context,
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => (Dashboard())),
+          (route) => false,
         );
       } else {
         print(tokenResponse.body);
