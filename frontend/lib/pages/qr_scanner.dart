@@ -4,12 +4,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/active_ride.dart';
 import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/profile.dart';
@@ -29,6 +31,8 @@ class _QRViewExampleState extends State<QRViewExample> {
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Razorpay razorpay = Razorpay();
+  var cost = 0;
 
   _QRViewExampleState(this.mode) : super();
 
@@ -80,7 +84,8 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                        'Barcode Type: ${describeEnum(
+                            result!.format)}   Data: ${result!.code}')
                   else
                     const Text('Scan a code'),
                   Row(
@@ -113,7 +118,8 @@ class _QRViewExampleState extends State<QRViewExample> {
                               builder: (context, snapshot) {
                                 if (snapshot.data != null) {
                                   return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}');
+                                      'Camera facing ${describeEnum(
+                                          snapshot.data!)}');
                                 } else {
                                   return const Text('loading');
                                 }
@@ -157,10 +163,26 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    razorpay = Razorpay();
+
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentFailure);
+  }
+
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
+    var scanArea = (MediaQuery
+        .of(context)
+        .size
+        .width < 400 ||
+        MediaQuery
+            .of(context)
+            .size
+            .height < 400)
         ? 150.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
@@ -217,7 +239,29 @@ class _QRViewExampleState extends State<QRViewExample> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var user = User.fromJson(jsonDecode(preferences.getString('user')!));
     if (!user.isSubscribed) {
-      // TODO: do payment and appropriate API call
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var startTime = DateTime.parse(pref.getString('ride_start_time')!);
+      cost = DateTime
+          .now()
+          .difference(startTime)
+          .inMinutes;
+
+      var options = {
+        "key": dotenv.env['RAZORPAY_API_KEY'],
+        "amount": cost * 100,
+        "name": 'PedalPal',
+        "description": "Add Balance to your PedalPal Wallet",
+        "prefill": {"contact": "6969696969", "email": "admin@pedalpal.com"},
+        "external": {
+          "wallets": ["paytm"]
+        },
+      };
+
+      try {
+        razorpay.open(options);
+      } catch (e) {
+        print(e.toString());
+      }
       return;
     }
 
@@ -250,7 +294,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => Dashboard()),
-        (route) => false,
+            (route) => false,
       );
     } else {
       Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
@@ -303,5 +347,71 @@ class _QRViewExampleState extends State<QRViewExample> {
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+
+  void handlePaymentSuccess(PaymentSuccessResponse instance) async {
+    LoadingIndicatorDialog().show(context);
+
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    var token = await storage.read(key: 'auth_token');
+
+    var uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'payment/add_payment/',
+    );
+
+    var body = jsonEncode({
+      'amount': cost,
+    });
+
+    var response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+      body: body,
+    );
+
+    var paymentId = jsonDecode(response.body)['id'];
+
+    var lock = result?.code;
+
+    uri = Uri(
+      scheme: 'https',
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'booking/end/',
+    );
+
+    body = jsonEncode({
+      'id': lock,
+      'payment_id': paymentId,
+    });
+
+
+    response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+      body: body,
+    );
+
+    LoadingIndicatorDialog().dismiss();
+    if (response.statusCode == 201) {
+      Fluttertoast.showToast(msg: 'Ride ended successfully!');
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Dashboard()),
+            (route) => false,
+      );
+    } else {
+      Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
+      Navigator.pop(context);
+    }
+  }
+
+  void handlePaymentFailure(PaymentFailureResponse instance) {
   }
 }
