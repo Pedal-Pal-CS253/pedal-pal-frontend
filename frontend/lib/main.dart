@@ -12,6 +12,7 @@ import 'pages/map_page.dart';
 
 bool _initialURILinkHandled = false;
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 Future<void> main() async {
   await dotenv.load();
 
@@ -21,11 +22,13 @@ Future<void> main() async {
   if (!loggedIn) {
     runApp(MaterialApp(
       home: MyApp(),
+      navigatorObservers: [routeObserver],
     ));
   } else {
     runApp(
       MaterialApp(
         home: Dashboard(),
+        navigatorObservers: [routeObserver],
       ),
     );
   }
@@ -167,11 +170,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text("Welcome to PedalPal!"),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/login'),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage())),
               child: Text("Login"),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/register'),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RegistrationPage())),
               child: Text("Register"),
             )
           ],

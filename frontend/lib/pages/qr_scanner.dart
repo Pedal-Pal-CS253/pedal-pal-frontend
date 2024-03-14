@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/active_ride.dart';
 import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
@@ -182,6 +183,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
+      controller.pauseCamera();
       setState(() {
         result = scanData;
         // scanData has lock id
@@ -245,11 +247,14 @@ class _QRViewExampleState extends State<QRViewExample> {
 
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
-      AlertPopup().show(context, text: "Successful!");
+      Fluttertoast.showToast(msg: 'Ride ended successfully!');
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Dashboard()),
+        (route) => false,
+      );
     } else {
-      AlertPopup().show(context, text: response.body);
+      Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
+      Navigator.pop(context);
     }
   }
 
@@ -280,12 +285,17 @@ class _QRViewExampleState extends State<QRViewExample> {
 
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => RideScreen()));
-      AlertPopup().show(context, text: "Successful!");
-      // TODO: store start time in SharedPreferences
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString('ride_start_time', DateTime.now().toString());
+      preferences.setString(
+          'ride_start_hub', jsonDecode(response.body)['start_hub'].toString());
+      Fluttertoast.showToast(msg: 'Ride started successfully!');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => RideScreen()),
+      );
     } else {
-      AlertPopup().show(context, text: response.body);
+      Fluttertoast.showToast(msg: "There was an error! ${response.body}");
+      Navigator.pop(context);
     }
   }
 

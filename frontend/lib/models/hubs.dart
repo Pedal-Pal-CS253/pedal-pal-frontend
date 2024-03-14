@@ -11,6 +11,12 @@ List<double> longitudeList = [];
 List<int> availableList = [];
 
 Future<void> getHubs() async {
+  hubIdList = [];
+  hubNameList = [];
+  latitudeList = [];
+  longitudeList = [];
+  availableList = [];
+
   String baseURL = "https://pedal-pal-backend.vercel.app/booking/view_hubs/";
   FlutterSecureStorage storage = FlutterSecureStorage();
   var token = await storage.read(key: 'auth_token');

@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:core';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/main.dart';
 import 'package:frontend/models/advance_book.dart';
 import 'package:frontend/models/hubs.dart';
 import 'package:frontend/pages/booking_page.dart';
@@ -10,6 +15,10 @@ import 'package:frontend/pages/qr_scanner.dart';
 import 'package:frontend/pages/setting_page.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/profile.dart';
+import 'active_ride.dart';
 
 late int activeHubId;
 
@@ -20,7 +29,8 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<Dashboard> {
+class _MapPageState extends State<Dashboard>
+    with AfterLayoutMixin<Dashboard>, RouteAware {
   DateTime? selectedDate = DateTime.now();
   TimeOfDay? selectedTime = TimeOfDay.now();
 
@@ -52,16 +62,37 @@ class _MapPageState extends State<Dashboard> {
   bool showInfoContainer = false;
   late int cycleNumber;
   Set<Marker> markers = {};
+  late User user;
 
   @override
   void initState() {
     super.initState();
-    placeOfMarker = '';
-    _generateMarkers();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  void _getUserInfo() async {
+    getUserDetails();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userData = prefs.getString('user');
+    if (userData != null) {
+      user = User.fromJson(jsonDecode(userData));
+    }
   }
 
   void infoForMarker(
       String markerId, LatLng markerPosition, int cycles, int hubId) {
+    getHubs();
     setState(() {
       placeOfMarker = markerId;
       cycleNumber = cycles;
@@ -128,6 +159,19 @@ class _MapPageState extends State<Dashboard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (user.isRideActive) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => RideScreen()),
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: 'You have no active rides!');
+                      }
+                    },
+                    child: Text("View Active Ride"),
+                  ),
                   Container(
                     height: 600,
                     child: GoogleMap(
@@ -266,6 +310,12 @@ class _MapPageState extends State<Dashboard> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    if (user.isRideActive) {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              'You already have an active ride!');
+                                      return;
+                                    }
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
                                       builder: (context) =>
@@ -298,7 +348,7 @@ class _MapPageState extends State<Dashboard> {
                                     backgroundColor: Colors.blue,
                                   ),
                                   child: Text(
-                                    'Book Now',
+                                    'Book for Later',
                                     style: TextStyle(
                                       color: Colors
                                           .white, // Change the text color as per your requirement
@@ -396,7 +446,12 @@ class _MapPageState extends State<Dashboard> {
                     onTap: () {
                       FlutterSecureStorage storage = FlutterSecureStorage();
                       storage.delete(key: 'auth_token');
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => MyHomePage(title: 'Pedal Pal'),
+                        ),
+                        (route) => false,
+                      );
                     },
                   ),
                 ],
@@ -406,5 +461,37 @@ class _MapPageState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    print("afterFirstLayout called!");
+    placeOfMarker = '';
+    _generateMarkers();
+    _getUserInfo();
+  }
+
+  @override
+  void didPush() {
+    print("didPush called on dashboard");
+    _getUserInfo();
+  }
+
+  @override
+  void didPop() {
+    print("didPop called on dashboard");
+    _getUserInfo();
+  }
+
+  @override
+  void didPushNext() {
+    print("didPushNext called on dashboard");
+    _getUserInfo();
+  }
+
+  @override
+  void didPopNext() {
+    print("didPopNext called on dashboard");
+    _getUserInfo();
   }
 }
