@@ -5,7 +5,8 @@ import 'package:frontend/models/profile.dart';
 import 'package:frontend/pages/qr_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// TODO: load start_time from shared preferences and display current time etc.
+final double costPerMinute = 1.0;
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,67 @@ class _RideScreenState extends State<RideScreen> {
     }
   }
 
+  int calculateRideDuration() {
+    DateTime currentTime = DateTime.now();
+    Duration difference = currentTime.difference(startTime);
+    return difference.inMinutes;
+  }
+
+  double calculateCurrentAmount() {
+    int duration = calculateRideDuration();
+    return duration * costPerMinute;
+  }
+
+  void _showRideStatusDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              "Ride Status",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Ride Duration:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "${calculateRideDuration()} minutes",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8), // Adjust spacing as needed
+              Text(
+                "Current Amount:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "₹${calculateCurrentAmount().toStringAsFixed(2)}",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,9 +157,7 @@ class _RideScreenState extends State<RideScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // Functionality for Ride Status goes here
-                },
+                onPressed: _showRideStatusDialog,
                 child: Text(
                   'Ride Status',
                   style: TextStyle(
