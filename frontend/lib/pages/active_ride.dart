@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/profile.dart';
 import 'package:frontend/pages/qr_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 final double costPerMinute = 1.0;
 
@@ -74,6 +75,12 @@ class _RideScreenState extends State<RideScreen> {
     return duration * costPerMinute;
   }
 
+  String getFDT(DateTime dt) {
+    var formatterDate = DateFormat("dd MMM yyyy");
+    var formatterTime = DateFormat('hh:mm a');
+    return formatterDate.format(dt) + "    " + formatterTime.format(dt);
+  }
+
   void _showRideStatusDialog() {
     showDialog(
       context: context,
@@ -141,7 +148,6 @@ class _RideScreenState extends State<RideScreen> {
               children: [
                 CircleAvatar(
                   radius: 50,
-
                   // backgroundImage: AssetImage(
                   //     'assets/profile_picture.jpg'), // Put your image path here
                 ),
@@ -195,7 +201,7 @@ class _RideScreenState extends State<RideScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  startTime.toString(),
+                  getFDT(startTime),
                   style: TextStyle(color: Colors.grey),
                 ),
               ],
@@ -277,7 +283,8 @@ class _RideScreenState extends State<RideScreen> {
   }
 
   void endRide() async {
-    var response = await showAlertDialog(context, calculateCurrentAmount().toString());
+    var response =
+        await showAlertDialog(context, calculateCurrentAmount().toString());
     if (response == true) {
       Navigator.of(context).push(
         MaterialPageRoute(

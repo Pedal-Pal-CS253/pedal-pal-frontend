@@ -133,7 +133,7 @@ class _MapPageState extends State<Dashboard>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Hello, !',
+          'Hello, ${user.firstName}!',
           textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 24,
@@ -154,11 +154,12 @@ class _MapPageState extends State<Dashboard>
           SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
-              margin: EdgeInsets.only(top: 100),
+              margin: EdgeInsets.only(top: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+
                   ElevatedButton(
                     onPressed: () {
                       if (user.isRideActive) {
@@ -173,6 +174,7 @@ class _MapPageState extends State<Dashboard>
                     child: Text("View Active Ride"),
                   ),
                   Container(
+                    margin: EdgeInsets.only(top: 20),
                     height: 600,
                     child: GoogleMap(
                       initialCameraPosition: const CameraPosition(
@@ -374,7 +376,8 @@ class _MapPageState extends State<Dashboard>
           child: Column(
             children: [
               SizedBox(
-                height: 200,
+                height: 170,
+                width: 340,
                 child: DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.blue,
@@ -383,12 +386,12 @@ class _MapPageState extends State<Dashboard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleAvatar(
-                        radius: 30,
+                        radius: 28,
                         backgroundImage: AssetImage('assets/profile_photo.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Raghav',
+                        '${user.firstName} ${user.lastName}',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -433,7 +436,7 @@ class _MapPageState extends State<Dashboard>
                     },
                   ),
                   ListTile(
-                    title: Text('Settings'),
+                    title: Text('View Profile'),
                     onTap: () {
                       Navigator.push(
                           context,
