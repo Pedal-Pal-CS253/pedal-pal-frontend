@@ -6,6 +6,8 @@ import 'package:frontend/pages/qr_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import 'alerts.dart';
+
 final double costPerMinute = 1.0;
 
 class MyApp extends StatelessWidget {
@@ -252,39 +254,9 @@ class _RideScreenState extends State<RideScreen> {
     );
   }
 
-  Future<bool> showAlertDialog(BuildContext context, String cost) async {
-    Widget cancelButton = ElevatedButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop(false);
-      },
-    );
-    Widget continueButton = ElevatedButton(
-      child: Text("Continue"),
-      onPressed: () {
-        Navigator.of(context).pop(true);
-      },
-    );
-    AlertDialog alert = AlertDialog(
-      title: Text("End Ride?"),
-      content: Text("You will have to pay ₹$cost."),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-    final result = await showDialog<bool?>(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-    return result ?? false;
-  }
-
   void endRide() async {
     var response =
-        await showAlertDialog(context, calculateCurrentAmount().toString());
+        await showConfirmationDialog(context, 'End Ride?', 'You will have to pay ₹${calculateCurrentAmount().toString()}');
     if (response == true) {
       Navigator.of(context).push(
         MaterialPageRoute(

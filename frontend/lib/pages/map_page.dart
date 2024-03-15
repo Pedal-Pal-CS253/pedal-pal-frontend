@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/models/advance_book.dart';
 import 'package:frontend/models/hubs.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:frontend/pages/booking_page.dart';
 import 'package:frontend/pages/history_page.dart';
 import 'package:frontend/pages/qr_scanner.dart';
@@ -159,19 +160,41 @@ class _MapPageState extends State<Dashboard>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-
-                  ElevatedButton(
-                    onPressed: () {
-                      if (user.isRideActive) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => RideScreen()),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                            msg: 'You have no active rides!');
-                      }
-                    },
-                    child: Text("View Active Ride"),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (user.isRideActive) {
+                              Fluttertoast.showToast(
+                                  msg: 'You already have an active ride!');
+                              return;
+                            }
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  const QRViewExample(mode: "book"),
+                            ));
+                          },
+                          child: Text('Ride Now'),
+                        ),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (user.isRideActive) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => RideScreen()),
+                              );
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: 'You have no active rides!');
+                            }
+                          },
+                          child: Text("View Active Ride"),
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 20),
@@ -311,37 +334,32 @@ class _MapPageState extends State<Dashboard>
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    if (user.isRideActive) {
+                                  onPressed: () async {
+                                    var cost = DateTime(
+                                            selectedDate!.year,
+                                            selectedDate!.month,
+                                            selectedDate!.day,
+                                            selectedTime!.hour,
+                                            selectedTime!.minute)
+                                        .difference(DateTime.now())
+                                        .inMinutes;
+                                    if (cost <= 0) {
                                       Fluttertoast.showToast(
-                                          msg:
-                                              'You already have an active ride!');
+                                        msg:
+                                            "Your booking cannot be in the past!",
+                                      );
+                                      setState(() {
+                                        showInfoContainer = false;
+                                      });
                                       return;
                                     }
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const QRViewExample(mode: "book"),
-                                    ));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .blue, // Change the background color as per your requirement
-                                  ),
-                                  child: Text(
-                                    'Ride Now',
-                                    style: TextStyle(
-                                      color: Colors
-                                          .white, // Change the text color as per your requirement
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    bookForLater(selectedDate, selectedTime);
+                                    var response = await showConfirmationDialog(
+                                        context,
+                                        'Book in Advance?',
+                                        'You will have to pay ₹$cost.');
+                                    if (response == true) {
+                                      await bookForLater(selectedDate, selectedTime);
+                                    }
                                     setState(() {
                                       showInfoContainer = false;
                                     });

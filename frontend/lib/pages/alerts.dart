@@ -113,3 +113,34 @@ class LoadingIndicatorDialog {
     }
   }
 }
+
+Future<bool> showConfirmationDialog(BuildContext context, String title, String content) async {
+  Widget cancelButton = ElevatedButton(
+    child: Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop(false);
+    },
+  );
+  Widget continueButton = ElevatedButton(
+    child: Text("Continue"),
+    onPressed: () {
+      Navigator.of(context).pop(true);
+    },
+  );
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    content: Text(content),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+  final result = await showDialog<bool?>(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+  return result ?? false;
+}
+
