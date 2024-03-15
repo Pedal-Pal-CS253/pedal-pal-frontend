@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,7 @@ List<String> hubNameList = [];
 List<double> latitudeList = [];
 List<double> longitudeList = [];
 List<int> availableList = [];
+Map<int, String> hubIdName = {};
 
 Future<void> getHubs() async {
   hubIdList = [];
@@ -35,6 +37,9 @@ Future<void> getHubs() async {
       latitudeList.add(item['latitude']);
       longitudeList.add(item['longitude']);
       availableList.add(item['available']);
+
+      hubIdName.addEntries({hubIdList.last: hubNameList.last}.entries);
+      print(hubIdName);
     }
   } else {}
 }
