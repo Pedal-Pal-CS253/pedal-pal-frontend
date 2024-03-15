@@ -176,23 +176,6 @@ class IssueItem extends StatelessWidget {
               ),
             ],
           ),
-        )
-        //   padding: EdgeInsets.symmetric(horizontal: 10),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       Expanded(
-        //         child: Text(
-        //           title,
-        //           style: TextStyle(color: isSelected ? Colors.white : Colors.black),
-        //         ),
-        //       ),
-        //       isSelected
-        //           ? Icon(Icons.check, color: Colors.white)
-        //           : SizedBox(), // Empty SizedBox to maintain the layout
-        //     ],
-        //   ),
-        // ),
-        );
+        ));
   }
 }

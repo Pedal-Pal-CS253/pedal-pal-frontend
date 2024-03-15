@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ride Service UI',
       theme: ThemeData(
-        // Set background color as desired
         scaffoldBackgroundColor: Colors.grey[200],
       ),
       home: RideScreen(),
@@ -37,7 +36,6 @@ class _RideScreenState extends State<RideScreen> {
   @override
   void initState() {
     super.initState();
-    // Retrieve the user information from shared_preferences
     _getUserInfo();
   }
 
@@ -109,7 +107,7 @@ class _RideScreenState extends State<RideScreen> {
                 "${calculateRideDuration()} minutes",
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8), // Adjust spacing as needed
+              SizedBox(height: 8),
               Text(
                 "Current Amount:",
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -145,13 +143,11 @@ class _RideScreenState extends State<RideScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // User Profile
             Column(
               children: [
                 CircleAvatar(
                   radius: 50,
-                  // backgroundImage: AssetImage(
-                  //     'assets/profile_picture.jpg'), // Put your image path here
+                  backgroundImage: AssetImage('assets/profile_photo.png'),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -161,7 +157,6 @@ class _RideScreenState extends State<RideScreen> {
               ],
             ),
             SizedBox(height: 20),
-            // Ride Status Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -179,8 +174,7 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 40), // Increased vertical space
-            // Start Hub
+            SizedBox(height: 40),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -194,7 +188,7 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 40), // Increased vertical space
+            SizedBox(height: 40),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -208,8 +202,7 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 40), // Increased vertical space
-            // Payment Mode
+            SizedBox(height: 40),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -218,7 +211,6 @@ class _RideScreenState extends State<RideScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 InkWell(
-                  // onTap: _toggleSubscription,
                   child: Text(
                     user.isSubscribed ? 'Wallet' : 'UPI',
                     style: TextStyle(color: Colors.blue),
@@ -226,9 +218,7 @@ class _RideScreenState extends State<RideScreen> {
                 ),
               ],
             ),
-            // Ride Status Button
             SizedBox(height: 20),
-            // End Ride Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -255,8 +245,8 @@ class _RideScreenState extends State<RideScreen> {
   }
 
   void endRide() async {
-    var response =
-        await showConfirmationDialog(context, 'End Ride?', 'You will have to pay ₹${calculateCurrentAmount().toString()}');
+    var response = await showConfirmationDialog(context, 'End Ride?',
+        'You will have to pay ₹${calculateCurrentAmount().toString()}');
     if (response == true) {
       Navigator.of(context).push(
         MaterialPageRoute(

@@ -179,14 +179,15 @@ class _MapPageState extends State<Dashboard>
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                           ),
-                          child: Text('Ride Now',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                          child: Text(
+                            'Ride Now',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(width: 10), // Adjust spacing as needed
+                      SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
@@ -203,10 +204,11 @@ class _MapPageState extends State<Dashboard>
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 88, 83, 154),
                           ),
-                          child: Text('View Active Ride',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                          child: Text(
+                            'View Active Ride',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -244,11 +246,9 @@ class _MapPageState extends State<Dashboard>
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
-                        // Adjust corner radius
                         boxShadow: [
                           BoxShadow(
                             color: Colors.white.withOpacity(1),
-                            // spreadRadius: 5.0, // Adjust shadow spread
                           ),
                         ],
                       ),
@@ -424,8 +424,7 @@ class _MapPageState extends State<Dashboard>
                                     child: Text(
                                       'Book for Later',
                                       style: TextStyle(
-                                        color: Colors
-                                            .white, // Change the text color as per your requirement
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
@@ -442,8 +441,6 @@ class _MapPageState extends State<Dashboard>
             ),
         ],
       ),
-
-      // Navigation bar
       drawer: Drawer(
         child: SingleChildScrollView(
           child: Column(

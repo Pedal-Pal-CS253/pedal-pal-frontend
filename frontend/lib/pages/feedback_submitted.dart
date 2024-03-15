@@ -45,14 +45,8 @@ class FeedbackSubmitted extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // IconButton(
-                //   icon: Icon(Icons.arrow_back),
-                //   onPressed: () {
-                //     Navigator.of(context).pop();
-                //   },
-                // ),
                 Image.asset(
-                  'assets/confirmation.png', // Path to your feedback image
+                  'assets/confirmation.png',
                   width: 100,
                   height: 100,
                 ),

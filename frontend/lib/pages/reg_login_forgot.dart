@@ -118,7 +118,8 @@ class RegistrationPage extends StatelessWidget {
                     TextFormField(
                       controller: phoneController,
                       validator: validatePhoneNumber,
-                      keyboardType: TextInputType.numberWithOptions(decimal: false),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: false),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Your Phone Number',
@@ -206,7 +207,7 @@ class RegistrationPage extends StatelessWidget {
     if (response.statusCode == 200) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => AccountCreatedPage()),
-              (route) => false);
+          (route) => false);
     } else {
       var jsonResponse = jsonDecode(response.body);
       AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
@@ -266,8 +267,10 @@ class OTPVerificationPage extends StatelessWidget {
                     backgroundColor: Color(0xFF1A2758),
                   ),
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (context) => AccountCreatedPage()),
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AccountCreatedPage()),
                         (route) => false);
                   },
                   child: Text(
@@ -308,7 +311,6 @@ class AccountCreatedPage extends StatelessWidget {
               ),
             ),
             Text('Welcome to PedalPal!'),
-            // Spacer(),
             SizedBox(height: 20.0),
             Align(
               alignment: Alignment.bottomCenter,
@@ -320,8 +322,8 @@ class AccountCreatedPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false);
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false);
                   },
                   child: Text(
                     'Continue',
@@ -414,7 +416,10 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordPage()));
                         },
                         child: Text('Forgot Password?'),
                       ),
@@ -428,7 +433,10 @@ class LoginPage extends StatelessWidget {
                           Text('Not on Pedal Pal Yet? '),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationApp()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegistrationApp()));
                             },
                             child: Text(
                               'Sign Up!',
@@ -578,9 +586,9 @@ class ForgotPasswordPage extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                            (route) => false
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
+                              (route) => false);
                         },
                         child: Text('Login?'),
                       ),

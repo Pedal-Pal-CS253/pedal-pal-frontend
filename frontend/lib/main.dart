@@ -102,8 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint('Invoked initURIHandler');
       try {
         final initialURI = await getInitialUri();
-        // Use the initialURI and warn the user if it is not correct,
-        // but keep in mind it could be `null`.
         if (initialURI != null) {
           debugPrint("Initial URI received $initialURI");
           if (!mounted) {
@@ -114,8 +112,6 @@ class _MyHomePageState extends State<MyHomePage> {
           debugPrint("Null Initial URI received");
         }
       } on PlatformException {
-        // Platform messages may fail, so we use a try/catch PlatformException.
-        // Handle exception by warning the user their action did not succeed
         debugPrint("Failed to receive initial uri");
       } on FormatException catch (err) {
         if (!mounted) {
@@ -127,12 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // Handle incoming links - the ones that the app will receive from the OS
-  // while already started.
   void _incomingLinkHandler() {
     if (true) {
-      // It will handle app links while the app is already started - be it in
-      // the foreground or in the background.
       _streamSubscription = uriLinkStream.listen((Uri? uri) {
         if (!mounted) {
           return;
@@ -162,19 +154,19 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
-        gradient: LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        stops: [0, 0.1, 0.45, 0.5, 0.95, 1],
-        colors: [
-          Color.fromARGB(255, 56, 165, 210),
-          Color.fromARGB(255, 60, 170, 217),
-          Color.fromARGB(255, 169, 200, 217),
-          Color.fromARGB(255, 169, 200, 217),
-          Color.fromARGB(255, 88, 83, 154),
-          Color.fromARGB(255, 69, 78, 140),
-        ],
-    ),
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            stops: [0, 0.1, 0.45, 0.5, 0.95, 1],
+            colors: [
+              Color.fromARGB(255, 56, 165, 210),
+              Color.fromARGB(255, 60, 170, 217),
+              Color.fromARGB(255, 169, 200, 217),
+              Color.fromARGB(255, 169, 200, 217),
+              Color.fromARGB(255, 88, 83, 154),
+              Color.fromARGB(255, 69, 78, 140),
+            ],
+          ),
         ),
         child: Center(
           child: Column(
@@ -183,8 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 200),
               Image.asset(
                 'assets/pedal_pal_logo_small.png',
-                // Adjust the path to your image
-                width: 180, // Adjust the width as needed
+                width: 180,
               ),
               Image.asset(
                 'assets/pedal_pal_logo_text.png',

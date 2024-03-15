@@ -97,11 +97,9 @@ class WalletBalanceScreen extends State<WBS> {
             child: Text('Add Balance',
                 style: TextStyle(
                   color: Colors.white,
-                )
-            ),
+                )),
           ),
           SizedBox(height: 20),
-
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -115,8 +113,7 @@ class WalletBalanceScreen extends State<WBS> {
             child: Text('View Transaction History',
                 style: TextStyle(
                   color: Colors.white,
-                )
-            ),
+                )),
           ),
         ],
       ),
@@ -198,7 +195,7 @@ class AddBalanceScreen extends State<ABS> {
     }
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Dashboard()),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -208,7 +205,7 @@ class AddBalanceScreen extends State<ABS> {
         msg: "Payment Failed!", toastLength: Toast.LENGTH_SHORT);
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Dashboard()),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -274,7 +271,7 @@ class THS extends StatefulWidget {
 
 class TransactionHistoryScreen extends State<THS> {
   Future<List<Transaction>> getTransactions() async {
-    List<Transaction> data = [];
+    List<Transaction>? data = [];
 
     var uri = Uri(
       scheme: 'https',
@@ -304,7 +301,7 @@ class TransactionHistoryScreen extends State<THS> {
       data.add(temp);
     }
 
-    return data;
+    return data.reversed.toList();
   }
 
   String getFDT(DateTime dt) {
@@ -360,7 +357,7 @@ class TransactionHistoryScreen extends State<THS> {
                       ),
                     ),
                     subtitle: Text(
-                      '${getFDT(transaction.date)}',
+                      getFDT(transaction.date),
                     ),
                   ),
                 );

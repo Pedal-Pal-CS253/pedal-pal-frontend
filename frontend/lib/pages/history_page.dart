@@ -49,10 +49,8 @@ class _HistoryPageState extends State<HistoryPage> {
         DateTime startTime = DateTime.parse(data['start_time']);
         DateTime endTime = DateTime.parse(data['end_time']);
 
-        // Calculate duration as the difference between end time and start time
         Duration difference = endTime.difference(startTime);
 
-        // Format the duration as hours and minutes
         String formattedDuration =
             '${difference.inHours}h ${difference.inMinutes.remainder(60)}m';
 
@@ -82,11 +80,8 @@ class _HistoryPageState extends State<HistoryPage> {
     init();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    // Calculate total time used
     Duration totalTimeUsed = Duration();
     for (var data in historyDataList) {
       List<String> timeParts = data.duration.split(' ');
@@ -139,7 +134,8 @@ class _HistoryPageState extends State<HistoryPage> {
               Column(
                 children: historyDataList.map((data) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8.0),
                     child: HistoryPane(
                       startLocation: data.startLocation,
                       startTime: data.startTime,
@@ -172,12 +168,6 @@ class HistoryPane extends StatelessWidget {
     required this.endTime,
     required this.duration,
   });
-
-  String getFDT(DateTime dt) {
-    var formatterDate = DateFormat("dd MMM yyyy");
-    var formatterTime = DateFormat('hh:mm a');
-    return formatterDate.format(dt) + "\n" + formatterTime.format(dt);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,11 +225,19 @@ class HistoryPane extends StatelessWidget {
   }
 
   Widget _buildTimeInfo(String label, DateTime time) {
-    return Text(
-      '${getFDT(time)}',
-      style: TextStyle(color: Color(0xFF8B97AC)),
-      textAlign: TextAlign.center,
-
+    return Column(
+      children: [
+        Text(
+          DateFormat("dd MMM yyyy").format(time),
+          style: TextStyle(color: Colors.grey.shade600),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          DateFormat("hh:mm a").format(time),
+          style: TextStyle(color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

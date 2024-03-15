@@ -19,7 +19,6 @@ class RideOver extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              // Make children take the entire width
               children: [
                 Expanded(
                   flex: 3,
