@@ -6,7 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> bookForLater(DateTime? selectedDate, TimeOfDay? selectedTime) async {
+Future<void> bookForLater(
+    DateTime? selectedDate, TimeOfDay? selectedTime) async {
   print('Booking for later $selectedDate $selectedTime');
   var uri = Uri(
     scheme: 'https',

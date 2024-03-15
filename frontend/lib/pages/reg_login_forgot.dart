@@ -31,15 +31,30 @@ final InputDecoration textFormFieldDecoration = InputDecoration(
 String? validateEmail(String? value) {
   const pattern =
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$";
+  if (value == null || value.isEmpty) {
+    return 'Email address is required';
+  }
   final regex = RegExp(pattern);
+  if (!regex.hasMatch(value)) {
+    return 'Enter a valid email address';
+  }
+  return null;
+}
 
-  return value!.isNotEmpty && !regex.hasMatch(value)
-      ? 'Enter a valid email address'
-      : null;
+String? validatePhoneNumber(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Phone number is required';
+  }
+  final pattern = r'^[0-9]{10}$';
+  final regex = RegExp(pattern);
+  if (!regex.hasMatch(value)) {
+    return 'Enter a valid phone number';
+  }
+  return null;
 }
 
 String? validateName(String? value) {
-  const pattern = r'\b[a-zA-Z]{2,}(?:\s[a-zA-Z]{2,})+$';
+  const pattern = r'\b[a-zA-Z]{1,}(?:\s[a-zA-Z]{1,})+$';
   final regex = RegExp(pattern);
 
   return value!.isNotEmpty && !regex.hasMatch(value)
@@ -49,15 +64,6 @@ String? validateName(String? value) {
 
 String? validatePassword(String? value) {
   return value!.isEmpty ? "Password cannot be blank" : null;
-}
-
-String? validatePhoneNumber(String? value) {
-  const pattern = r'^(\+\d+)?[0-9]{10}$';
-  final regex = RegExp(pattern);
-
-  return value!.isNotEmpty && !regex.hasMatch(value)
-      ? 'Enter valid phone number'
-      : null;
 }
 
 class RegistrationPage extends StatelessWidget {
@@ -84,18 +90,17 @@ class RegistrationPage extends StatelessWidget {
                   children: <Widget>[
                     Center(
                       child: Container(
-                        margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
+                        margin: EdgeInsets.only(bottom: 80.0, top: 50.0),
                         child: Image.asset(
                           'assets/pedal_pal_logo.png',
-                          // Adjust the path to your image
-                          width: 260, // Adjust the width as needed
+                          width: 260,
                         ),
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 40.0),
                       child: Text(
-                        'Welcome to Pedal Pal',
+                        'Welcome to PedalPal!',
                         style: TextStyle(
                           fontSize: 14.0,
                         ),
@@ -113,6 +118,8 @@ class RegistrationPage extends StatelessWidget {
                     TextFormField(
                       controller: phoneController,
                       validator: validatePhoneNumber,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: false),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Your Phone Number',
@@ -198,7 +205,9 @@ class RegistrationPage extends StatelessWidget {
     );
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/login');
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => AccountCreatedPage()),
+          (route) => false);
     } else {
       var jsonResponse = jsonDecode(response.body);
       AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
@@ -258,7 +267,11 @@ class OTPVerificationPage extends StatelessWidget {
                     backgroundColor: Color(0xFF1A2758),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/account_created');
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AccountCreatedPage()),
+                        (route) => false);
                   },
                   child: Text(
                     'Verify',
@@ -297,8 +310,8 @@ class AccountCreatedPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text('Your account has been created successfully!'),
-            Spacer(),
+            Text('Welcome to PedalPal!'),
+            SizedBox(height: 20.0),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -308,7 +321,9 @@ class AccountCreatedPage extends StatelessWidget {
                     backgroundColor: Color(0xFF1A2758),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false);
                   },
                   child: Text(
                     'Continue',
@@ -347,8 +362,8 @@ class LoginPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child: Image.asset(
-                  'assets/pedal_pal_logo.png', // Adjust the path to your image
-                  width: 260, // Adjust the width as needed
+                  'assets/pedal_pal_logo.png',
+                  width: 260,
                 ),
               ),
             ),
@@ -401,10 +416,10 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/forgot_password',
-                          ); // Navigate to forgot password page
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordPage()));
                         },
                         child: Text('Forgot Password?'),
                       ),
@@ -418,8 +433,10 @@ class LoginPage extends StatelessWidget {
                           Text('Not on Pedal Pal Yet? '),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context,
-                                  '/registration'); // Navigate to forgot password page
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegistrationApp()));
                             },
                             child: Text(
                               'Sign Up!',
@@ -530,8 +547,8 @@ class ForgotPasswordPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child: Image.asset(
-                  'assets/pedal_pal_logo.png', // Adjust the path to your image
-                  width: 260, // Adjust the width as needed
+                  'assets/pedal_pal_logo.png',
+                  width: 260,
                 ),
               ),
             ),
@@ -553,7 +570,6 @@ class ForgotPasswordPage extends StatelessWidget {
                         backgroundColor: Color(0xFF1A2758),
                       ),
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/password_reset');
                         getEmailForPasswordReset(context, emailController.text);
                       },
                       child: Text(
@@ -569,8 +585,10 @@ class ForgotPasswordPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context,
-                              '/login'); // Navigate to forgot password page
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
+                              (route) => false);
                         },
                         child: Text('Login?'),
                       ),
@@ -656,8 +674,8 @@ class PasswordResetPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.only(bottom: 100.0, top: 80.0),
                 child: Image.asset(
-                  'assets/pedal_pal_logo.png', // Adjust the path to your image
-                  width: 260, // Adjust the width as needed
+                  'assets/pedal_pal_logo.png',
+                  width: 260,
                 ),
               ),
             ),
@@ -691,7 +709,6 @@ class PasswordResetPage extends StatelessWidget {
                       ),
                       onPressed: () {
                         if (_password != _confirmPassword) {
-                          // you can add your statements here
                           Fluttertoast.showToast(
                               msg:
                                   "Passwords do not match! Please re-type again.",

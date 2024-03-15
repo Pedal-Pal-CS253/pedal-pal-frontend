@@ -114,7 +114,8 @@ class LoadingIndicatorDialog {
   }
 }
 
-Future<bool> showConfirmationDialog(BuildContext context, String title, String content) async {
+Future<bool> showConfirmationDialog(
+    BuildContext context, String title, String content) async {
   Widget cancelButton = ElevatedButton(
     child: Text("Cancel"),
     onPressed: () {
@@ -143,4 +144,3 @@ Future<bool> showConfirmationDialog(BuildContext context, String title, String c
   );
   return result ?? false;
 }
-

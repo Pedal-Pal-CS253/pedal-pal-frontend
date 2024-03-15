@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -48,10 +49,8 @@ class _HistoryPageState extends State<HistoryPage> {
         DateTime startTime = DateTime.parse(data['start_time']);
         DateTime endTime = DateTime.parse(data['end_time']);
 
-        // Calculate duration as the difference between end time and start time
         Duration difference = endTime.difference(startTime);
 
-        // Format the duration as hours and minutes
         String formattedDuration =
             '${difference.inHours}h ${difference.inMinutes.remainder(60)}m';
 
@@ -83,7 +82,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total time used
     Duration totalTimeUsed = Duration();
     for (var data in historyDataList) {
       List<String> timeParts = data.duration.split(' ');
@@ -136,7 +134,8 @@ class _HistoryPageState extends State<HistoryPage> {
               Column(
                 children: historyDataList.map((data) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8.0),
                     child: HistoryPane(
                       startLocation: data.startLocation,
                       startTime: data.startTime,
@@ -172,9 +171,8 @@ class HistoryPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the width of HistoryPane based on screen width
     final screenWidth = MediaQuery.of(context).size.width;
-    final paneWidth = screenWidth * 0.9; // Adjust the percentage as needed
+    final paneWidth = screenWidth * 0.9;
 
     return Container(
       width: paneWidth,
@@ -183,20 +181,27 @@ class HistoryPane extends StatelessWidget {
         color: Color(0xFFC1E2F1),
       ),
       padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          _buildLocationCircle(startLocation),
-          SizedBox(height: 8),
-          _buildTimeInfo('Start', startTime),
-          SizedBox(height: 8),
-          _buildTimeInfo('End', endTime),
-          SizedBox(height: 8),
-          _buildLocationCircle(endLocation),
-          SizedBox(height: 8),
+          Column(
+            children: [
+              _buildLocationCircle(startLocation),
+              SizedBox(height: 8.0),
+              _buildTimeInfo('Start', startTime),
+            ],
+          ),
+          Spacer(),
           Text(
             duration,
             style: TextStyle(fontSize: 18.0),
+          ),
+          Spacer(),
+          Column(
+            children: [
+              _buildLocationCircle(endLocation),
+              SizedBox(height: 8.0),
+              _buildTimeInfo('End', endTime),
+            ],
           ),
         ],
       ),
@@ -220,9 +225,19 @@ class HistoryPane extends StatelessWidget {
   }
 
   Widget _buildTimeInfo(String label, DateTime time) {
-    return Text(
-      '$label: ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-      style: TextStyle(color: Color(0xFF8B97AC)),
+    return Column(
+      children: [
+        Text(
+          DateFormat("dd MMM yyyy").format(time),
+          style: TextStyle(color: Colors.grey.shade600),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          DateFormat("hh:mm a").format(time),
+          style: TextStyle(color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Custom text controller to prevent cursor from moving to the front
 class CustomTextEditingController extends TextEditingController {
   CustomTextEditingController({String text = ''}) : super(text: text);
 
@@ -123,18 +122,17 @@ class _SettingPageState extends State<SettingPage> {
         Fluttertoast.showToast(msg: "You are subscribed successfully!");
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => Dashboard()),
-              (route) => false,
+          (route) => false,
         );
       } else {
         Fluttertoast.showToast(
             msg:
-            "Payment successful but failed to subscribe! Please contact support team.");
+                "Payment successful but failed to subscribe! Please contact support team.");
       }
-
     } else {
       Fluttertoast.showToast(
           msg:
-          "Payment successful but failed to update database! Please contact support team.");
+              "Payment successful but failed to update database! Please contact support team.");
     }
   }
 
@@ -164,7 +162,7 @@ class _SettingPageState extends State<SettingPage> {
         child: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          automaticallyImplyLeading: false, // Disable back arrow
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
               IconButton(
@@ -182,7 +180,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
               ),
-              SizedBox(width: 48.0), // Add space to the right of the text
+              SizedBox(width: 48.0),
             ],
           ),
         ),
@@ -199,8 +197,7 @@ class _SettingPageState extends State<SettingPage> {
                   Container(
                     width: 160.0,
                     height: 160.0,
-                    child:
-                    CircleAvatar(
+                    child: CircleAvatar(
                       radius: 28,
                       backgroundImage: AssetImage('assets/profile_photo.png'),
                     ),
@@ -229,25 +226,30 @@ class _SettingPageState extends State<SettingPage> {
             SizedBox(height: 24.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'NAME',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
+              child: Text('NAME',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue)),
             ),
             SizedBox(height: 8.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 '${user.firstName} ${user.lastName}',
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(
+                    fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
-              ),
+            ),
             SizedBox(height: 24.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'EMAIL',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -255,7 +257,8 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.email,
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(
+                    fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
@@ -263,7 +266,10 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'PHONE',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -271,7 +277,8 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.phone,
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(
+                    fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
@@ -279,7 +286,10 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'SUBSCRIPTION STATUS',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -287,7 +297,8 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.isSubscribed ? 'Subscribed' : 'Not Subscribed',
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(
+                    fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
@@ -300,8 +311,7 @@ class _SettingPageState extends State<SettingPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1a2758),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            20.0), // Increased border radius
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
                       padding: EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 32.0),

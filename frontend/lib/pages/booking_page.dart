@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,9 +27,8 @@ class _BookingPageState extends State<BookingPage> {
   Future<void> bookingRequest() async {
     var uri = Uri(
       scheme: 'https',
-      host: 'pedal-pal-backend.vercel.app', // Replace with your backend URL
-      path:
-          'analytics/booking_history/', // Replace with the endpoint to fetch booking data
+      host: 'pedal-pal-backend.vercel.app',
+      path: 'analytics/booking_history/',
     );
 
     FlutterSecureStorage storage = FlutterSecureStorage();
@@ -158,7 +158,7 @@ class BookingInfo extends StatelessWidget {
   final String startLocation;
   final String bookTime;
   final String startTime;
-  final String? endTime; // Nullable endTime
+  final String? endTime;
 
   BookingInfo({
     required this.startLocation,
@@ -172,7 +172,7 @@ class BookingInfo extends StatelessWidget {
     final isCurrentBooking = endTime == null;
 
     return Container(
-      height: 100.0,
+      height: 130.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Color(0xFFC1E2F1),
@@ -180,15 +180,12 @@ class BookingInfo extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       child: Row(
         children: [
-          // Circle on the left
           Container(
             width: 60.0,
             height: 60.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isCurrentBooking
-                  ? Colors.green
-                  : Colors.red, // Color based on current or past booking
+              color: isCurrentBooking ? Colors.green : Colors.blue.shade300,
             ),
             alignment: Alignment.center,
             child: Icon(
@@ -197,34 +194,53 @@ class BookingInfo extends StatelessWidget {
             ),
           ),
           SizedBox(width: 16.0),
-          // Start Location
-          Expanded(
-            child: Text(
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(
+              "Booking\nfrom",
+              style: TextStyle(
+                color: Color(0xFF8B97AC),
+                fontSize: 16.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            Text(
               startLocation,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 20.0,
+                fontSize: 21.0,
               ),
             ),
+          ]),
+          VerticalDivider(
+            color: Colors.blueGrey.shade300,
+            thickness: 1.0,
+            width: 28.0,
           ),
-          SizedBox(width: 16.0),
-          // Start Date and Time
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                bookTime,
+                "Booked at",
                 style: TextStyle(
                   color: Color(0xFF8B97AC),
                   fontSize: 16.0,
                 ),
               ),
               Text(
-                startTime,
+                DateFormat("dd MMM yyy    hh:mm a")
+                    .format(DateTime.parse(bookTime)),
+              ),
+              Spacer(),
+              Text(
+                "Ride Started at",
                 style: TextStyle(
                   color: Color(0xFF8B97AC),
                   fontSize: 16.0,
                 ),
+              ),
+              Text(
+                DateFormat("dd MMM yyy    hh:mm a")
+                    .format(DateTime.parse(startTime)),
               ),
             ],
           ),
@@ -238,7 +254,7 @@ class BookingData {
   final String startLocation;
   final String bookTime;
   final String startTime;
-  final String? endTime; // Nullable endTime
+  final String? endTime;
 
   BookingData({
     required this.startLocation,

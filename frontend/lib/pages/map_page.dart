@@ -16,6 +16,7 @@ import 'package:frontend/pages/qr_scanner.dart';
 import 'package:frontend/pages/setting_page.dart';
 import 'package:frontend/pages/wallet_home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/profile.dart';
@@ -63,7 +64,7 @@ class _MapPageState extends State<Dashboard>
   bool showInfoContainer = false;
   late int cycleNumber;
   Set<Marker> markers = {};
-  late User user;
+  User user = User("loading", "loading", "loading", "loading", false);
 
   @override
   void initState() {
@@ -175,9 +176,18 @@ class _MapPageState extends State<Dashboard>
                                   const QRViewExample(mode: "book"),
                             ));
                           },
-                          child: Text('Ride Now'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                          ),
+                          child: Text(
+                            'Ride Now',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
+                      SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
@@ -191,7 +201,15 @@ class _MapPageState extends State<Dashboard>
                                   msg: 'You have no active rides!');
                             }
                           },
-                          child: Text("View Active Ride"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(255, 88, 83, 154),
+                          ),
+                          child: Text(
+                            'View Active Ride',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -223,15 +241,14 @@ class _MapPageState extends State<Dashboard>
                   color: Colors.black.withOpacity(0.5),
                   child: Center(
                     child: Container(
-                      height: 300,
-                      width: 300,
+                      height: 330,
+                      width: 320,
+                      padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
-                        // Adjust corner radius
                         boxShadow: [
                           BoxShadow(
                             color: Colors.white.withOpacity(1),
-                            // spreadRadius: 5.0, // Adjust shadow spread
                           ),
                         ],
                       ),
@@ -242,33 +259,28 @@ class _MapPageState extends State<Dashboard>
                             children: [
                               Expanded(
                                 child: Container(
-                                  height: 30,
-                                  // Height adjusted to be a tenth of the container's height
-                                  child: Center(child: Text('SELECTED HUB')),
+                                  height: 40,
+                                  child: Center(
+                                      child: Text(
+                                    'SELECTED\nHUB',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  )),
                                 ),
                               ),
                               Expanded(
                                 child: Container(
-                                  height: 30,
-                                  // Height adjusted to be a tenth of the container's height
-                                  child:
-                                      Center(child: Text('CYCLES AVAILABLE')),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text(placeOfMarker)),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  child: Center(child: Text('$cycleNumber')),
+                                  height: 40,
+                                  child: Center(
+                                      child: Text(
+                                    'CYCLES\nAVAILABLE',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  )),
                                 ),
                               ),
                             ],
@@ -279,104 +291,146 @@ class _MapPageState extends State<Dashboard>
                                 child: Container(
                                   height: 50,
                                   child: Center(
-                                      child: Text(
-                                    'Advanced Booking',
-                                    style: TextStyle(
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
+                                      child: Text(placeOfMarker,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue))),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  child: Center(
+                                      child: Text('$cycleNumber',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue))),
                                 ),
                               ),
                             ],
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () => _selectDate(context),
-                                        child: Text('Select Date'),
-                                      ),
-                                      Text(
-                                        '${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}',
-                                        style: TextStyle(fontSize: 18),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: (user.isSubscribed
+                                    ? Colors.blueAccent.withOpacity(0.4)
+                                    : Colors.grey),
+                                border: Border.all(
+                                  color: (user.isSubscribed
+                                      ? Colors.blue
+                                      : Colors.grey),
+                                  width: 3,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          height: 50,
+                                          child: Center(
+                                              child: Text(
+                                            'Advanced Booking',
+                                            style: TextStyle(
+                                              fontSize: 23,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () => _selectTime(context),
-                                        child: Text('Select Time'),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              ElevatedButton(
+                                                onPressed: (!user.isSubscribed)
+                                                    ? null
+                                                    : () =>
+                                                        _selectDate(context),
+                                                child: Text(
+                                                  'Select Date',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 88, 83, 154),
+                                                ),
+                                              ),
+                                              Text(
+                                                '${DateFormat("dd MMM yyyy").format(DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day, selectedTime!.hour, selectedTime!.minute))}',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      SizedBox(height: 20),
-                                      Text(
-                                        '${selectedTime?.hour}:${selectedTime?.minute}',
-                                        style: TextStyle(fontSize: 18),
+                                      Expanded(
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              ElevatedButton(
+                                                onPressed: (!user.isSubscribed)
+                                                    ? null
+                                                    : () =>
+                                                        _selectTime(context),
+                                                child: Text(
+                                                  'Select Time',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 88, 83, 154),
+                                                ),
+                                              ),
+                                              Text(
+                                                '${DateFormat("hh:mm a").format(DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day, selectedTime!.hour, selectedTime!.minute))}',
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    var cost = DateTime(
-                                            selectedDate!.year,
-                                            selectedDate!.month,
-                                            selectedDate!.day,
-                                            selectedTime!.hour,
-                                            selectedTime!.minute)
-                                        .difference(DateTime.now())
-                                        .inMinutes;
-                                    if (cost <= 0) {
-                                      Fluttertoast.showToast(
-                                        msg:
-                                            "Your booking cannot be in the past!",
-                                      );
-                                      setState(() {
-                                        showInfoContainer = false;
-                                      });
-                                      return;
-                                    }
-                                    var response = await showConfirmationDialog(
-                                        context,
-                                        'Book in Advance?',
-                                        'You will have to pay ₹$cost.');
-                                    if (response == true) {
-                                      await bookForLater(selectedDate, selectedTime);
-                                    }
-                                    setState(() {
-                                      showInfoContainer = false;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  child: Text(
-                                    'Book for Later',
-                                    style: TextStyle(
-                                      color: Colors
-                                          .white, // Change the text color as per your requirement
+                                  SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: (!user.isSubscribed)
+                                        ? null
+                                        : () => bookLater(),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      minimumSize: Size(120, 40),
+                                    ),
+                                    child: Text(
+                                      'Book for Later',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -387,8 +441,6 @@ class _MapPageState extends State<Dashboard>
             ),
         ],
       ),
-
-      // Navigation bar
       drawer: Drawer(
         child: SingleChildScrollView(
           child: Column(
@@ -514,5 +566,29 @@ class _MapPageState extends State<Dashboard>
   void didPopNext() {
     print("didPopNext called on dashboard");
     _getUserInfo();
+  }
+
+  void bookLater() async {
+    var cost = DateTime(selectedDate!.year, selectedDate!.month,
+            selectedDate!.day, selectedTime!.hour, selectedTime!.minute)
+        .difference(DateTime.now())
+        .inMinutes;
+    if (cost <= 0) {
+      Fluttertoast.showToast(
+        msg: "Your booking cannot be in the past!",
+      );
+      setState(() {
+        showInfoContainer = false;
+      });
+      return;
+    }
+    var response = await showConfirmationDialog(
+        context, 'Book in Advance?', 'You will have to pay ₹$cost.');
+    if (response == true) {
+      await bookForLater(selectedDate, selectedTime);
+    }
+    setState(() {
+      showInfoContainer = false;
+    });
   }
 }
