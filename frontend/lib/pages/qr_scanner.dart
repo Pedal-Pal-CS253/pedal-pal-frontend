@@ -36,8 +36,6 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   _QRViewExampleState(this.mode) : super();
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -61,7 +59,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: [
                   SizedBox(width: 16.0),
                   Text(
-                    'Scan the QR on the cycle',
+                    'Scan the QR on the Cycle',
                     style: TextStyle(color: Colors.black, fontSize: 24.0),
                   ),
                 ],
@@ -75,6 +73,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
+          SizedBox(height: 8),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -84,50 +83,9 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(
-                            result!.format)}   Data: ${result!.code}')
+                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
                   else
-                    const Text('Scan a code'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(
-                                          snapshot.data!)}');
-                                } else {
-                                  return const Text('loading');
-                                }
-                              },
-                            )),
-                      )
-                    ],
-                  ),
+                    const Text('Scan a Code'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,22 +94,48 @@ class _QRViewExampleState extends State<QRViewExample> {
                         margin: const EdgeInsets.all(8),
                         child: ElevatedButton(
                           onPressed: () async {
-                            await controller?.pauseCamera();
+                            await controller?.toggleFlash();
+                            setState(() {});
                           },
-                          child: const Text('pause',
-                              style: TextStyle(fontSize: 20)),
+                          child: FutureBuilder(
+                            future: controller?.getFlashStatus(),
+                            builder: (context, snapshot) {
+                              return (snapshot.data!)
+                                  ? Icon(
+                                      Icons.flash_on,
+                                      color: Colors.black,
+                                    )
+                                  : Icon(
+                                      Icons.flash_off,
+                                      color: Colors.black,
+                                    );
+                            },
+                          ),
                         ),
                       ),
                       Container(
                         margin: const EdgeInsets.all(8),
                         child: ElevatedButton(
                           onPressed: () async {
-                            await controller?.resumeCamera();
+                            await controller?.flipCamera();
+                            setState(() {});
                           },
-                          child: const Text('resume',
-                              style: TextStyle(fontSize: 20)),
+                          child: FutureBuilder(
+                            future: controller?.getCameraInfo(),
+                            builder: (context, snapshot) {
+                              return (snapshot.data == 'front')
+                                  ? Icon(
+                                      Icons.camera_front,
+                                      color: Colors.black,
+                                    )
+                                  : Icon(
+                                      Icons.camera_rear,
+                                      color: Colors.black,
+                                    );
+                            },
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],
@@ -175,15 +159,9 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery
-        .of(context)
-        .size
-        .width < 400 ||
-        MediaQuery
-            .of(context)
-            .size
-            .height < 400)
-        ? 150.0
+    var scanArea = (MediaQuery.of(context).size.width < 400 ||
+            MediaQuery.of(context).size.height < 400)
+        ? 250.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
@@ -241,10 +219,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     if (!user.isSubscribed) {
       SharedPreferences pref = await SharedPreferences.getInstance();
       var startTime = DateTime.parse(pref.getString('ride_start_time')!);
-      cost = DateTime
-          .now()
-          .difference(startTime)
-          .inMinutes;
+      cost = DateTime.now().difference(startTime).inMinutes;
 
       var options = {
         "key": dotenv.env['RAZORPAY_API_KEY'],
@@ -294,7 +269,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => Dashboard()),
-            (route) => false,
+        (route) => false,
       );
     } else {
       Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
@@ -389,7 +364,6 @@ class _QRViewExampleState extends State<QRViewExample> {
       'payment_id': paymentId,
     });
 
-
     response = await http.post(
       uri,
       headers: {
@@ -404,7 +378,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => Dashboard()),
-            (route) => false,
+        (route) => false,
       );
     } else {
       Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
@@ -412,6 +386,5 @@ class _QRViewExampleState extends State<QRViewExample> {
     }
   }
 
-  void handlePaymentFailure(PaymentFailureResponse instance) {
-  }
+  void handlePaymentFailure(PaymentFailureResponse instance) {}
 }

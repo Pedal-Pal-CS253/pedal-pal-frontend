@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../models/payment.dart';
@@ -90,9 +91,17 @@ class WalletBalanceScreen extends State<WBS> {
                 MaterialPageRoute(builder: (context) => ABS()),
               );
             },
-            child: Text('Add Balance'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+            ),
+            child: Text('Add Balance',
+                style: TextStyle(
+                  color: Colors.white,
+                )
+            ),
           ),
           SizedBox(height: 20),
+
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -100,7 +109,14 @@ class WalletBalanceScreen extends State<WBS> {
                 MaterialPageRoute(builder: (context) => THS()),
               );
             },
-            child: Text('View Transaction History'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 88, 83, 154),
+            ),
+            child: Text('View Transaction History',
+                style: TextStyle(
+                  color: Colors.white,
+                )
+            ),
           ),
         ],
       ),
@@ -233,9 +249,12 @@ class AddBalanceScreen extends State<ABS> {
               height: 12,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
               child: Text(
                 "Add Balance",
-                style: TextStyle(color: Colors.blueAccent),
+                style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
                 openCheckout();
@@ -288,6 +307,12 @@ class TransactionHistoryScreen extends State<THS> {
     return data;
   }
 
+  String getFDT(DateTime dt) {
+    var formatterDate = DateFormat("dd MMM yyyy");
+    var formatterTime = DateFormat('hh:mm a');
+    return formatterDate.format(dt) + "     " + formatterTime.format(dt);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -324,18 +349,18 @@ class TransactionHistoryScreen extends State<THS> {
                     leading: CircleAvatar(
                       backgroundColor: backgroundColor,
                       child: Icon(
-                        Icons.monetization_on,
+                        Icons.currency_rupee,
                         color: Colors.white,
                       ),
                     ),
                     title: Text(
-                      'Amount: ${transaction.amount.toString()}',
+                      'Amount: ₹${transaction.amount.toString()}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      'Date: ${transaction.date.day.toString().padLeft(2, '0')}/${transaction.date.month.toString().padLeft(2, '0')}/${transaction.date.year}   Time: ${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
+                      '${getFDT(transaction.date)}',
                     ),
                   ),
                 );

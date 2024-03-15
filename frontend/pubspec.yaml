@@ -1,5 +1,5 @@
 name: frontend
-description: "A new Flutter project."
+description: "PedalPal serves as a self-contained product, allowing easy bicycle issuance from strategically installed hubs across the university. "
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -52,6 +52,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -62,6 +63,11 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  image_path: "assets/pedal_pal_logo_small.png"
+  android: true
+  ios: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -81,6 +87,16 @@ flutter:
     - assets/pedal_pal_logo.png
     - assets/confirmation.png
     - assets/profile_photo.png
+    - assets/pedal_pal_logo_small.png
+    - assets/pedal_pal_logo_text.png
+
+  fonts:
+    - family: Lato
+      fonts:
+        - asset: assets/google_fonts/Lato-Regular.ttf
+        - asset: assets/google_fonts/Lato-Bold.ttf
+          weight: 600
+        - asset: assets/google_fonts/Lato-Thin.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

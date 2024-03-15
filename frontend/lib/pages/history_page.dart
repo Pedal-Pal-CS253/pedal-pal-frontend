@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -80,6 +81,8 @@ class _HistoryPageState extends State<HistoryPage> {
     super.initState();
     init();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,11 +173,16 @@ class HistoryPane extends StatelessWidget {
     required this.duration,
   });
 
+  String getFDT(DateTime dt) {
+    var formatterDate = DateFormat("dd MMM yyyy");
+    var formatterTime = DateFormat('hh:mm a');
+    return formatterDate.format(dt) + "\n" + formatterTime.format(dt);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Calculate the width of HistoryPane based on screen width
     final screenWidth = MediaQuery.of(context).size.width;
-    final paneWidth = screenWidth * 0.9; // Adjust the percentage as needed
+    final paneWidth = screenWidth * 0.9;
 
     return Container(
       width: paneWidth,
@@ -183,20 +191,27 @@ class HistoryPane extends StatelessWidget {
         color: Color(0xFFC1E2F1),
       ),
       padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          _buildLocationCircle(startLocation),
-          SizedBox(height: 8),
-          _buildTimeInfo('Start', startTime),
-          SizedBox(height: 8),
-          _buildTimeInfo('End', endTime),
-          SizedBox(height: 8),
-          _buildLocationCircle(endLocation),
-          SizedBox(height: 8),
+          Column(
+            children: [
+              _buildLocationCircle(startLocation),
+              SizedBox(height: 8.0),
+              _buildTimeInfo('Start', startTime),
+            ],
+          ),
+          Spacer(),
           Text(
             duration,
             style: TextStyle(fontSize: 18.0),
+          ),
+          Spacer(),
+          Column(
+            children: [
+              _buildLocationCircle(endLocation),
+              SizedBox(height: 8.0),
+              _buildTimeInfo('End', endTime),
+            ],
           ),
         ],
       ),
@@ -221,8 +236,10 @@ class HistoryPane extends StatelessWidget {
 
   Widget _buildTimeInfo(String label, DateTime time) {
     return Text(
-      '$label: ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+      '${getFDT(time)}',
       style: TextStyle(color: Color(0xFF8B97AC)),
+      textAlign: TextAlign.center,
+
     );
   }
 }

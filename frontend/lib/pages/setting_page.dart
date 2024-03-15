@@ -231,7 +231,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'NAME',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.blue)
               ),
             ),
             SizedBox(height: 8.0),
@@ -239,7 +239,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 '${user.firstName} ${user.lastName}',
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
               ),
             SizedBox(height: 24.0),
@@ -247,7 +247,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'EMAIL',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -255,7 +255,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.email,
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
@@ -263,7 +263,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'PHONE',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -271,7 +271,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.phone,
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
@@ -279,7 +279,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 'SUBSCRIPTION STATUS',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
             ),
             SizedBox(height: 8.0),
@@ -287,7 +287,7 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 user.isSubscribed ? 'Subscribed' : 'Not Subscribed',
-                style: TextStyle(fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0, color: Color.fromARGB(255, 88, 83, 154)),
               ),
             ),
             SizedBox(height: 24.0),
