@@ -310,7 +310,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
 
     var body = jsonEncode({
-      'cycle': lock, // TODO: change to lock
+      'id': lock,
     });
 
     FlutterSecureStorage storage = FlutterSecureStorage();

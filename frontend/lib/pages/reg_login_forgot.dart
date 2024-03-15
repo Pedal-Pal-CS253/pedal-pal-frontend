@@ -29,17 +29,34 @@ final InputDecoration textFormFieldDecoration = InputDecoration(
 );
 
 String? validateEmail(String? value) {
-  const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
-      r'+/=?^_`{|}~-]+)|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
-      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])")@(?:(?:[a-z0-9](?:[a-z0-9-]'
-      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
-      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
-      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
-      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+  const pattern =
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$";
   final regex = RegExp(pattern);
 
   return value!.isNotEmpty && !regex.hasMatch(value)
       ? 'Enter a valid email address'
+      : null;
+}
+
+String? validateName(String? value) {
+  const pattern = r'\b[a-zA-Z]{2,}(?:\s[a-zA-Z]{2,})+$';
+  final regex = RegExp(pattern);
+
+  return value!.isNotEmpty && !regex.hasMatch(value)
+      ? 'Please enter your full name'
+      : null;
+}
+
+String? validatePassword(String? value) {
+  return value!.isEmpty ? "Password cannot be blank" : null;
+}
+
+String? validatePhoneNumber(String? value) {
+  const pattern = r'^(\+\d+)?[0-9]{10}$';
+  final regex = RegExp(pattern);
+
+  return value!.isNotEmpty && !regex.hasMatch(value)
+      ? 'Enter valid phone number'
       : null;
 }
 
@@ -86,6 +103,8 @@ class RegistrationPage extends StatelessWidget {
                     ),
                     TextFormField(
                       controller: nameController,
+                      validator: validateName,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Your Full Name',
                       ),
@@ -93,6 +112,8 @@ class RegistrationPage extends StatelessWidget {
                     SizedBox(height: 15.0),
                     TextFormField(
                       controller: phoneController,
+                      validator: validatePhoneNumber,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Your Phone Number',
                       ),
@@ -109,6 +130,8 @@ class RegistrationPage extends StatelessWidget {
                     SizedBox(height: 15.0),
                     TextFormField(
                       controller: passwordController,
+                      validator: validatePassword,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Password',
                       ),
@@ -177,7 +200,8 @@ class RegistrationPage extends StatelessWidget {
     if (response.statusCode == 200) {
       Navigator.pushNamed(context, '/login');
     } else {
-      AlertPopup().show(context, text: response.body);
+      var jsonResponse = jsonDecode(response.body);
+      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
     }
   }
 }
@@ -336,6 +360,8 @@ class LoginPage extends StatelessWidget {
                     SizedBox(height: 20.0),
                     TextFormField(
                       controller: emailController,
+                      validator: validateEmail,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Your Email',
                       ),
@@ -343,6 +369,8 @@ class LoginPage extends StatelessWidget {
                     SizedBox(height: 20.0),
                     TextFormField(
                       controller: passwordController,
+                      validator: validatePassword,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: textFormFieldDecoration.copyWith(
                         labelText: 'Password',
                       ),
@@ -472,10 +500,14 @@ class LoginPage extends StatelessWidget {
         );
       } else {
         print(tokenResponse.body);
-        AlertPopup().show(context, text: tokenResponse.body);
+        AlertPopup().show(context, text: jsonDecode(tokenResponse.body)['msg']);
       }
     } else {
-      AlertPopup().show(context, text: response.body);
+      var jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      print(jsonResponse.keys);
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first][0].toString());
     }
   }
 }

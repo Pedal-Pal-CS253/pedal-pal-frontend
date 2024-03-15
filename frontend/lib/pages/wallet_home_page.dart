@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../models/payment.dart';
+import 'map_page.dart';
 
 class WalletHomePage extends StatelessWidget {
   @override
@@ -179,12 +180,20 @@ class AddBalanceScreen extends State<ABS> {
           msg:
               "Payment successful but failed to update database! Please contact support team.");
     }
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => Dashboard()),
+          (route) => false,
+    );
   }
 
   void handlerErrorFailure() {
     debugPrint("Payment error");
     Fluttertoast.showToast(
         msg: "Payment Failed!", toastLength: Toast.LENGTH_SHORT);
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => Dashboard()),
+          (route) => false,
+    );
   }
 
   void handlerExternalWallet() {

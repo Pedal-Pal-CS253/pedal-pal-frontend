@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
 
-void bookForLater(DateTime? selectedDate, TimeOfDay? selectedTime) async {
+Future<void> bookForLater(DateTime? selectedDate, TimeOfDay? selectedTime) async {
   print('Booking for later $selectedDate $selectedTime');
   var uri = Uri(
     scheme: 'https',
@@ -34,10 +35,8 @@ void bookForLater(DateTime? selectedDate, TimeOfDay? selectedTime) async {
   print(response.body);
 
   if (response.statusCode == 201) {
-    var resBody = jsonDecode(response.body) as List<dynamic>;
-    print(resBody);
+    Fluttertoast.showToast(msg: 'Booked successfully!');
   } else {
-    print('Request failed with status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    Fluttertoast.showToast(msg: jsonDecode(response.body)['message']);
   }
 }
