@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/hubs.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:widget_arrows/widget_arrows.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -62,6 +64,8 @@ class _HistoryPageState extends State<HistoryPage> {
           duration: formattedDuration,
         ));
       }
+
+      historyDataList = historyDataList.reversed.toList();
 
       setState(() {});
     } else {
@@ -137,6 +141,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 8.0),
                     child: HistoryPane(
+                      index: historyDataList.indexOf(data),
                       startLocation: data.startLocation,
                       startTime: data.startTime,
                       endLocation: data.endLocation,
@@ -155,6 +160,7 @@ class _HistoryPageState extends State<HistoryPage> {
 }
 
 class HistoryPane extends StatelessWidget {
+  final int index;
   final String startLocation;
   final DateTime startTime;
   final DateTime endTime;
@@ -162,6 +168,7 @@ class HistoryPane extends StatelessWidget {
   final String duration;
 
   HistoryPane({
+    required this.index,
     required this.startLocation,
     required this.startTime,
     required this.endLocation,
@@ -181,45 +188,57 @@ class HistoryPane extends StatelessWidget {
         color: Color(0xFFC1E2F1),
       ),
       padding: EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Column(
-            children: [
-              _buildLocationCircle(startLocation),
-              SizedBox(height: 8.0),
-              _buildTimeInfo('Start', startTime),
-            ],
-          ),
-          Spacer(),
-          Text(
-            duration,
-            style: TextStyle(fontSize: 18.0),
-          ),
-          Spacer(),
-          Column(
-            children: [
-              _buildLocationCircle(endLocation),
-              SizedBox(height: 8.0),
-              _buildTimeInfo('End', endTime),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLocationCircle(String location) {
-    return Container(
-      width: 40.0,
-      height: 40.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0xFF8EC1DC),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        location,
-        style: TextStyle(color: Colors.black),
+      child: ArrowContainer(
+        child: Row(
+          children: [
+            Column(
+              children: [
+                ArrowElement(
+                  show: true,
+                  id: 'start_hub_$index',
+                  targetId: 'end_hub_$index',
+                  sourceAnchor: Alignment.centerRight,
+                  padEnd: 25,
+                  padStart: 25,
+                  child: Text(
+                    hubIdName[int.parse(startLocation)]!,
+                    style: TextStyle(
+                      color: Colors.indigo,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                _buildTimeInfo('Start', startTime),
+              ],
+            ),
+            Spacer(),
+            Text(
+              duration,
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Spacer(),
+            Column(
+              children: [
+                ArrowElement(
+                  show: true,
+                  id: 'end_hub_$index',
+                  child: Text(
+                    hubIdName[int.parse(endLocation)]!,
+                    style: TextStyle(
+                      color: Colors.indigo,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                _buildTimeInfo('End', endTime),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
