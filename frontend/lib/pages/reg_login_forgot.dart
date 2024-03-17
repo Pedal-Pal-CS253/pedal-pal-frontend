@@ -303,7 +303,7 @@ class AccountCreatedPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20.0),
             Text(
-              'Account Created Succesfully!',
+              'Account Created Succesfully! Please click on the link sent on your email address to activate your account.',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
