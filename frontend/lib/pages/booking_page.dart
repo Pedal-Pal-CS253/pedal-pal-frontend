@@ -215,7 +215,7 @@ class BookingInfo extends StatelessWidget {
           VerticalDivider(
             color: Colors.blueGrey.shade300,
             thickness: 1.0,
-            width: 28.0,
+            width: 22.0,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
