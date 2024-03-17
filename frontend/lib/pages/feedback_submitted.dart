@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'map_page.dart';
+
 class FeedbackSubmitted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,36 +36,44 @@ class FeedbackSubmitted extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.grey[300],
-        body: Center(
-          child: Container(
-            width: 400,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/confirmation.png',
-                  width: 100,
-                  height: 100,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Feedback Submitted!',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+        body: GestureDetector(
+          onTap: () => {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => Dashboard()),
+              (route) => false,
+            )
+          },
+          child: Center(
+            child: Container(
+              width: 400,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/confirmation.png',
+                    width: 100,
+                    height: 100,
                   ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'We appreciate your feedback.\nOur team will promptly address the issue.',
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  SizedBox(height: 20),
+                  Text(
+                    'Feedback Submitted!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'We appreciate your feedback.\nOur team will promptly address the issue.',
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

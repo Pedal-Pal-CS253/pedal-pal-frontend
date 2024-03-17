@@ -54,7 +54,7 @@ class _RideScreenState extends State<RideScreen> {
     }
     if (startTimeData != null) {
       setState(() {
-        startTime = DateTime.parse(startTimeData);
+        startTime = DateTime.parse(startTimeData).toLocal();
       });
     }
     if (startHubData != null) {

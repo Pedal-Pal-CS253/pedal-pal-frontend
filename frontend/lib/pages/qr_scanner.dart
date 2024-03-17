@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/pages/active_ride.dart';
+import 'package:frontend/pages/issues_with_cycle.dart';
 import 'package:frontend/pages/map_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -157,6 +158,38 @@ class _QRViewExampleState extends State<QRViewExample> {
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentFailure);
   }
 
+  void _showFeedbackDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Tell Us About Your Experience"),
+          content: Text("Would you like to tell us about your ride?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => IssuesWithCycle()),
+                      (route) => false,
+                );
+              },
+              child: Text("Sure"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => Dashboard()),
+                      (route) => false,
+                );
+              },
+              child: Text("Later"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildQrView(BuildContext context) {
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
@@ -215,7 +248,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     var user = User.fromJson(jsonDecode(preferences.getString('user')!));
     if (!user.isSubscribed) {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var startTime = DateTime.parse(pref.getString('ride_start_time')!);
+      var startTime = DateTime.parse(pref.getString('ride_start_time')!).toLocal();
       cost = DateTime.now().difference(startTime).inMinutes;
 
       var options = {
@@ -261,13 +294,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: body,
     );
 
+    await getUserDetails();
+
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Dashboard()),
-        (route) => false,
-      );
+      _showFeedbackDialog();
     } else {
       Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
       Navigator.pop(context);
@@ -298,6 +330,8 @@ class _QRViewExampleState extends State<QRViewExample> {
       },
       body: body,
     );
+
+    await getUserDetails();
 
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
@@ -370,13 +404,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: body,
     );
 
+    await getUserDetails();
+
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Dashboard()),
-        (route) => false,
-      );
+      _showFeedbackDialog();
     } else {
       Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
       Navigator.pop(context);
