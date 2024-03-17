@@ -799,7 +799,11 @@ class PasswordResetSuccessfulPage extends StatelessWidget {
                 backgroundColor: Color(0xFF1A2758),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (route) => false,
+                );
               },
               child: Text(
                 'Continue',
