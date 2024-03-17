@@ -197,7 +197,6 @@ class RegistrationPage extends StatelessWidget {
     });
 
     LoadingIndicatorDialog().show(context);
-    // TODO: add OTP validation
     var response = await http.post(
       uri,
       headers: {"Content-Type": "application/json"},
@@ -304,7 +303,7 @@ class AccountCreatedPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20.0),
             Text(
-              'Account Created Succesfully!',
+              'Account Created Succesfully! Please click on the link sent on your email address to activate your account.',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -484,40 +483,47 @@ class LoginPage extends StatelessWidget {
       var userData = jsonDecode(response.body)['user'];
       var user = User.fromJson(userData);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('user', jsonEncode(user.toJson()));
-
-      var tokenUri = Uri(
-        scheme: 'https',
-        host: 'pedal-pal-backend.vercel.app',
-        path: 'auth/get_auth_token/',
-      );
-
-      var tokenBody = jsonEncode({
-        'email': email,
-        'password': password,
-      });
-
-      LoadingIndicatorDialog().show(context);
-      var tokenResponse = await http.post(
-        tokenUri,
-        headers: {"Content-Type": "application/json"},
-        body: tokenBody,
-      );
-      LoadingIndicatorDialog().dismiss();
-
-      if (tokenResponse.statusCode == 200) {
-        token = jsonDecode(tokenResponse.body)['token'];
-        final storage = FlutterSecureStorage();
-        await storage.write(key: "auth_token", value: token);
-        print(token);
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => (Dashboard())),
-          (route) => false,
-        );
+      if (!user.isActive) {
+        AlertPopup().show(context,
+            text:
+                "Please verify your email first using the link sent on your email!");
       } else {
-        print(tokenResponse.body);
-        AlertPopup().show(context, text: jsonDecode(tokenResponse.body)['msg']);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', jsonEncode(user.toJson()));
+
+        var tokenUri = Uri(
+          scheme: 'https',
+          host: 'pedal-pal-backend.vercel.app',
+          path: 'auth/get_auth_token/',
+        );
+
+        var tokenBody = jsonEncode({
+          'email': email,
+          'password': password,
+        });
+
+        LoadingIndicatorDialog().show(context);
+        var tokenResponse = await http.post(
+          tokenUri,
+          headers: {"Content-Type": "application/json"},
+          body: tokenBody,
+        );
+        LoadingIndicatorDialog().dismiss();
+
+        if (tokenResponse.statusCode == 200) {
+          token = jsonDecode(tokenResponse.body)['token'];
+          final storage = FlutterSecureStorage();
+          await storage.write(key: "auth_token", value: token);
+          print(token);
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => (Dashboard())),
+            (route) => false,
+          );
+        } else {
+          print(tokenResponse.body);
+          AlertPopup()
+              .show(context, text: jsonDecode(tokenResponse.body)['msg']);
+        }
       }
     } else {
       var jsonResponse = jsonDecode(response.body);

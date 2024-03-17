@@ -297,7 +297,7 @@ class TransactionHistoryScreen extends State<THS> {
       var temp = Transaction(
           transaction['status'].toString(),
           num.parse(transaction['amount'].toString()).toInt(),
-          DateTime.parse(transaction['time']));
+          DateTime.parse(transaction['time']).toLocal());
       data.add(temp);
     }
 

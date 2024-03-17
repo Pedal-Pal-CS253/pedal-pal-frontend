@@ -48,8 +48,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
       for (var data in resBody) {
         if (data['end_time'] == null) continue;
-        DateTime startTime = DateTime.parse(data['start_time']);
-        DateTime endTime = DateTime.parse(data['end_time']);
+        DateTime startTime = DateTime.parse(data['start_time']).toLocal();
+        DateTime endTime = DateTime.parse(data['end_time']).toLocal();
 
         Duration difference = endTime.difference(startTime);
 

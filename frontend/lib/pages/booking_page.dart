@@ -229,11 +229,11 @@ class BookingInfo extends StatelessWidget {
               ),
               Text(
                 DateFormat("dd MMM yyy    hh:mm a")
-                    .format(DateTime.parse(bookTime)),
+                    .format(DateTime.parse(bookTime).toLocal()),
               ),
               Spacer(),
               Text(
-                "Ride Started at",
+                isCurrentBooking ? "Booked for" : "Ride Started at",
                 style: TextStyle(
                   color: Color(0xFF8B97AC),
                   fontSize: 16.0,
@@ -241,7 +241,7 @@ class BookingInfo extends StatelessWidget {
               ),
               Text(
                 DateFormat("dd MMM yyy    hh:mm a")
-                    .format(DateTime.parse(startTime)),
+                    .format(DateTime.parse(startTime).toLocal()),
               ),
             ],
           ),
