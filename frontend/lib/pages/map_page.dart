@@ -478,6 +478,10 @@ class _MapPageState extends State<Dashboard>
                   ListTile(
                     title: Text('Wallet'),
                     onTap: () {
+                      if (!user.isSubscribed) {
+                        AlertPopup().show(context, text: "This feature is available only for subscribed users!");
+                        return;
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(
