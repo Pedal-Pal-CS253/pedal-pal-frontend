@@ -64,7 +64,8 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
         MaterialPageRoute(builder: (context) => FeedbackSubmitted()),
       );
     } else {
-      AlertPopup().show(context, text: response.body);
+      var jsonResponse = jsonDecode(response.body);
+      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
     }
     return response;
   }
