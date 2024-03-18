@@ -198,8 +198,8 @@ class HistoryPane extends StatelessWidget {
                   id: 'start_hub_$index',
                   targetId: 'end_hub_$index',
                   sourceAnchor: Alignment.centerRight,
-                  padEnd: 25,
-                  padStart: 25,
+                  padEnd: 50,
+                  padStart: 50,
                   child: Text(
                     hubIdName[int.parse(startLocation)]!,
                     style: TextStyle(

@@ -303,13 +303,13 @@ class AccountCreatedPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20.0),
             Text(
-              'Account Created Succesfully! Please click on the link sent on your email address to activate your account.',
+              'Account Created Succesfully!',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text('Welcome to PedalPal!'),
+            Text('Please check your email for the link to activate your account.'),
             SizedBox(height: 20.0),
             Align(
               alignment: Alignment.bottomCenter,
@@ -629,7 +629,8 @@ class ForgotPasswordPage extends StatelessWidget {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => OpenEmail()));
     } else {
-      AlertPopup().show(context, text: response.body);
+      var jsonResponse = jsonDecode(response.body);
+      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
     }
 
     return response;
@@ -774,7 +775,8 @@ class PasswordResetPage extends StatelessWidget {
           MaterialPageRoute(
               builder: (context) => PasswordResetSuccessfulPage()));
     } else {
-      AlertPopup().show(context, text: response.body);
+      var jsonResponse = jsonDecode(response.body);
+      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
     }
 
     return response;
