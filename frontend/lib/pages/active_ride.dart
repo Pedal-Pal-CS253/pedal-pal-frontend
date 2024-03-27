@@ -47,6 +47,11 @@ class _RideScreenState extends State<RideScreen> {
     print(userData);
     print(startTimeData);
     print(startHubData);
+
+    if (userData == null || startTimeData == null || startHubData == null) {
+      getUserDetails();
+    }
+
     if (userData != null) {
       setState(() {
         user = User.fromJson(jsonDecode(userData));
