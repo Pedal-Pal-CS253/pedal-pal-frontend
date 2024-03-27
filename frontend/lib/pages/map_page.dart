@@ -93,8 +93,8 @@ class _MapPageState extends State<Dashboard>
   }
 
   void infoForMarker(
-      String markerId, LatLng markerPosition, int cycles, int hubId) {
-    getHubs();
+      String markerId, LatLng markerPosition, int cycles, int hubId) async {
+    await getHubs();
     setState(() {
       placeOfMarker = markerId;
       cycleNumber = cycles;
@@ -522,9 +522,12 @@ class _MapPageState extends State<Dashboard>
                   ),
                   ListTile(
                     title: Text('Log Out'),
-                    onTap: () {
+                    onTap: () async {
                       FlutterSecureStorage storage = FlutterSecureStorage();
                       storage.delete(key: 'auth_token');
+                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                      preferences.clear();
+
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => MyHomePage(title: 'Pedal Pal'),

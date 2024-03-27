@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/models/hubs.dart';
 import 'package:frontend/pages/active_ride.dart';
 import 'package:frontend/pages/issues_with_cycle.dart';
 import 'package:frontend/pages/map_page.dart';
@@ -251,6 +252,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var startTime =
           DateTime.parse(pref.getString('ride_start_time')!).toLocal();
       cost = DateTime.now().difference(startTime).inMinutes;
+      if (cost == 0) cost = 1;
 
       var options = {
         "key": dotenv.env['RAZORPAY_API_KEY'],
@@ -342,7 +344,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.setString('ride_start_time', DateTime.now().toString());
       preferences.setString(
-          'ride_start_hub', jsonDecode(response.body)['start_hub'].toString());
+          'ride_start_hub', hubIdName[jsonDecode(response.body)['start_hub']]!);
       Fluttertoast.showToast(msg: 'Ride started successfully!');
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => RideScreen()),
@@ -413,9 +415,13 @@ class _QRViewExampleState extends State<QRViewExample> {
 
     await getUserDetails();
 
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
     LoadingIndicatorDialog().dismiss();
     if (response.statusCode == 201) {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
+      preferences.remove('ride_start_time');
+      preferences.remove('ride_start_hub');
       _showFeedbackDialog();
     } else {
       var jsonResponse = jsonDecode(response.body);
