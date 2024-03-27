@@ -254,6 +254,11 @@ class AddBalanceScreen extends State<ABS> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
+                if (num.parse(textEditingController.text) <= 0) {
+                  Fluttertoast.showToast(
+                      msg: 'Please enter a positive amount!');
+                  return;
+                }
                 openCheckout();
               },
             )
