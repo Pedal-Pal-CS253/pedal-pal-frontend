@@ -65,7 +65,8 @@ class _IssueReportingScreenState extends State<IssueReportingScreen> {
       );
     } else {
       var jsonResponse = jsonDecode(response.body);
-      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first].toString());
     }
     return response;
   }

@@ -170,7 +170,7 @@ class _QRViewExampleState extends State<QRViewExample> {
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => IssuesWithCycle()),
-                      (route) => false,
+                  (route) => false,
                 );
               },
               child: Text("Sure"),
@@ -179,7 +179,7 @@ class _QRViewExampleState extends State<QRViewExample> {
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Dashboard()),
-                      (route) => false,
+                  (route) => false,
                 );
               },
               child: Text("Later"),
@@ -248,7 +248,8 @@ class _QRViewExampleState extends State<QRViewExample> {
     var user = User.fromJson(jsonDecode(preferences.getString('user')!));
     if (!user.isSubscribed) {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var startTime = DateTime.parse(pref.getString('ride_start_time')!).toLocal();
+      var startTime =
+          DateTime.parse(pref.getString('ride_start_time')!).toLocal();
       cost = DateTime.now().difference(startTime).inMinutes;
 
       var options = {
@@ -301,7 +302,10 @@ class _QRViewExampleState extends State<QRViewExample> {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
       _showFeedbackDialog();
     } else {
-      Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
+      var jsonResponse = jsonDecode(response.body);
+      Fluttertoast.showToast(
+          msg:
+              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
       Navigator.pop(context);
     }
   }
@@ -344,7 +348,10 @@ class _QRViewExampleState extends State<QRViewExample> {
         MaterialPageRoute(builder: (context) => RideScreen()),
       );
     } else {
-      Fluttertoast.showToast(msg: "There was an error! ${response.body}");
+      var jsonResponse = jsonDecode(response.body);
+      Fluttertoast.showToast(
+          msg:
+              "There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}");
       Navigator.pop(context);
     }
   }
@@ -411,7 +418,10 @@ class _QRViewExampleState extends State<QRViewExample> {
       Fluttertoast.showToast(msg: 'Ride ended successfully!');
       _showFeedbackDialog();
     } else {
-      Fluttertoast.showToast(msg: 'There was an error! ${response.body}');
+      var jsonResponse = jsonDecode(response.body);
+      Fluttertoast.showToast(
+          msg:
+              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
       Navigator.pop(context);
     }
   }

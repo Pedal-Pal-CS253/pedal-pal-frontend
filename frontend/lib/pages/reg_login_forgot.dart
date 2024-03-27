@@ -209,7 +209,8 @@ class RegistrationPage extends StatelessWidget {
           (route) => false);
     } else {
       var jsonResponse = jsonDecode(response.body);
-      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first][0].toString());
     }
   }
 }
@@ -309,7 +310,8 @@ class AccountCreatedPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text('Please check your email for the link to activate your account.'),
+            Text(
+                'Please check your email for the link to activate your account.'),
             SizedBox(height: 20.0),
             Align(
               alignment: Alignment.bottomCenter,
@@ -630,7 +632,8 @@ class ForgotPasswordPage extends StatelessWidget {
           context, MaterialPageRoute(builder: (context) => OpenEmail()));
     } else {
       var jsonResponse = jsonDecode(response.body);
-      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first][0].toString());
     }
 
     return response;
@@ -776,7 +779,8 @@ class PasswordResetPage extends StatelessWidget {
               builder: (context) => PasswordResetSuccessfulPage()));
     } else {
       var jsonResponse = jsonDecode(response.body);
-      AlertPopup().show(context, text: jsonResponse[jsonResponse.keys.first]);
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first][0].toString());
     }
 
     return response;

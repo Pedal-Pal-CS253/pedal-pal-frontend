@@ -220,7 +220,7 @@ class _MapPageState extends State<Dashboard>
                     child: GoogleMap(
                       initialCameraPosition: const CameraPosition(
                         target: LatLng(26.5113, 80.2329),
-                        zoom: 13,
+                        zoom: 15,
                       ),
                       markers: markers,
                     ),
@@ -479,7 +479,9 @@ class _MapPageState extends State<Dashboard>
                     title: Text('Wallet'),
                     onTap: () {
                       if (!user.isSubscribed) {
-                        AlertPopup().show(context, text: "This feature is available only for subscribed users!");
+                        AlertPopup().show(context,
+                            text:
+                                "This feature is available only for subscribed users!");
                         return;
                       }
                       Navigator.push(
