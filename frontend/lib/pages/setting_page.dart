@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -307,7 +308,16 @@ class _SettingPageState extends State<SettingPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ElevatedButton(
-                    onPressed: () => openCheckout(),
+                    onPressed: () async {
+                      var response = await showConfirmationDialog(
+                        context,
+                        'Subscribe for Additional Benefits?',
+                        'You will have to pay ₹100, out of which ₹80 will be added to your wallet and remaining will be deducted as processing fees.',
+                      );
+                      if (response == true) {
+                        openCheckout();
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1a2758),
                       shape: RoundedRectangleBorder(
