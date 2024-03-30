@@ -303,7 +303,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
+              '${jsonResponse[jsonResponse.keys.first][0].toString()}');
       Navigator.pop(context);
     }
   }
@@ -349,7 +349,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              "There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}");
+              "${jsonResponse[jsonResponse.keys.first][0].toString()}");
       Navigator.pop(context);
     }
   }
@@ -423,7 +423,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
+              '${jsonResponse[jsonResponse.keys.first][0].toString()}');
       Navigator.pop(context);
     }
   }
