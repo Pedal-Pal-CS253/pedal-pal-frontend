@@ -119,6 +119,8 @@ class _SettingPageState extends State<SettingPage> {
 
       print(response2.body);
 
+      getUserDetails();
+
       if (response2.statusCode == 200) {
         Fluttertoast.showToast(msg: "You are subscribed successfully!");
         Navigator.of(context).pushAndRemoveUntil(
