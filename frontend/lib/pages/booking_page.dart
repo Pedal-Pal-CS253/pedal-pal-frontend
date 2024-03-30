@@ -49,11 +49,13 @@ class _BookingPageState extends State<BookingPage> {
       var resBody = jsonDecode(response.body) as List<dynamic>;
 
       for (var data in resBody) {
+        print(data);
         BookingData bookingData = BookingData(
-          startLocation: data['hub'].toString(),
-          bookTime: data['book_time'],
-          startTime: data['start_time'],
-          endTime: (data['end_time'] != Null) ? data['end_time'] : null,
+            startLocation: data['hub'].toString(),
+            bookTime: data['book_time'],
+            startTime: data['start_time'],
+            endTime: (data['end_time'] != Null) ? data['end_time'] : null,
+            cycle: data['cycle'],
         );
 
         if (bookingData.endTime == null) {
@@ -146,6 +148,7 @@ class _BookingPageState extends State<BookingPage> {
                 bookTime: data.bookTime,
                 startTime: data.startTime,
                 endTime: data.endTime,
+                cycle: data.cycle,
               ),
             );
           }).toList(),
@@ -160,13 +163,14 @@ class BookingInfo extends StatelessWidget {
   final String bookTime;
   final String startTime;
   final String? endTime;
+  final int cycle;
 
-  BookingInfo({
-    required this.startLocation,
-    required this.bookTime,
-    required this.startTime,
-    required this.endTime,
-  });
+  BookingInfo(
+      {required this.startLocation,
+      required this.bookTime,
+      required this.startTime,
+      required this.endTime,
+      required this.cycle});
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +186,8 @@ class BookingInfo extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 60.0,
-            height: 60.0,
+            width: 45.0,
+            height: 45.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isCurrentBooking ? Colors.green : Colors.blue.shade300,
@@ -221,15 +225,17 @@ class BookingInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "Booked at",
+                isCurrentBooking ? "Cycle booked" : "Booked at",
                 style: TextStyle(
                   color: Color(0xFF8B97AC),
                   fontSize: 16.0,
                 ),
               ),
               Text(
-                DateFormat("dd MMM yyy    hh:mm a")
-                    .format(DateTime.parse(bookTime).toLocal()),
+                isCurrentBooking
+                    ? cycle.toString()
+                    : DateFormat("dd MMM yyy    hh:mm a")
+                        .format(DateTime.parse(bookTime).toLocal()),
               ),
               Spacer(),
               Text(
@@ -256,11 +262,12 @@ class BookingData {
   final String bookTime;
   final String startTime;
   final String? endTime;
+  final int cycle;
 
-  BookingData({
-    required this.startLocation,
-    required this.bookTime,
-    required this.startTime,
-    this.endTime,
-  });
+  BookingData(
+      {required this.startLocation,
+      required this.bookTime,
+      required this.startTime,
+      this.endTime,
+      required this.cycle});
 }
