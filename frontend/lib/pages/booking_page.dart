@@ -67,6 +67,8 @@ class _BookingPageState extends State<BookingPage> {
         }
       }
 
+      currentBookings = currentBookings.reversed.toList();
+      pastBookings = pastBookings.reversed.toList();
       setState(() {});
     } else {
       print('Request failed with status: ${response.statusCode}');

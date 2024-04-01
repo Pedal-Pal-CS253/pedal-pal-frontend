@@ -61,7 +61,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: [
                   SizedBox(width: 16.0),
                   Text(
-                    'Scan the QR on the Cycle',
+                    'Scan the QR on the Lock',
                     style: TextStyle(color: Colors.black, fontSize: 24.0),
                   ),
                 ],
@@ -83,10 +83,6 @@ class _QRViewExampleState extends State<QRViewExample> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  else
                     const Text('Scan a Code'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -307,7 +303,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
+              '${jsonResponse[jsonResponse.keys.first].toString()}');
       Navigator.pop(context);
     }
   }
@@ -353,7 +349,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              "There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}");
+              "${jsonResponse[jsonResponse.keys.first].toString()}");
       Navigator.pop(context);
     }
   }
@@ -427,7 +423,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       var jsonResponse = jsonDecode(response.body);
       Fluttertoast.showToast(
           msg:
-              'There was an error! ${jsonResponse[jsonResponse.keys.first][0].toString()}');
+              '${jsonResponse[jsonResponse.keys.first].toString()}');
       Navigator.pop(context);
     }
   }

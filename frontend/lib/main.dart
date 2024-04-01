@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/pages/alerts.dart';
 import 'package:frontend/pages/reg_login_forgot.dart';
+import 'package:http/http.dart' as http;
 import 'package:uni_links/uni_links.dart';
 
 import 'pages/map_page.dart';
@@ -82,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _incomingLinkHandler();
   }
 
-  _handleDeepLink(Uri? uri) {
+  _handleDeepLink(Uri? uri) async {
     if (uri!.path == "/auth/password_reset/confirm/") {
       final String token = uri.queryParameters['token']!;
 
@@ -92,6 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context) => PasswordResetPage(token: token),
         ),
       );
+    }
+    if (uri.path.startsWith("/auth/verify/")) {
+      var response = await http.get(uri);
+      var jsonResponse = jsonDecode(response.body);
+
+      AlertPopup().show(context,
+          text: jsonResponse[jsonResponse.keys.first].toString());
     }
   }
 
